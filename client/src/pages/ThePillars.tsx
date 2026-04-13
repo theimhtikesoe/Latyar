@@ -64,9 +64,9 @@ export default function ThePillars() {
       <section className="section-padding border-b border-border">
         <div className="container">
           <div className="max-w-3xl space-y-4">
-            <h1 className="text-5xl md:text-6xl font-bold neon-glow">The Pillars</h1>
-            <p className="text-xl text-muted-foreground">အဓိကမဏ္ဍိုင်များ - နိုင်ငံတကာကုန်သွယ်ရေး၏ အခြေခံအုတ်မြစ်</p>
-            <p className="text-lg text-foreground leading-relaxed">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold neon-glow">The Pillars</h1>
+            <p className="text-lg sm:text-xl text-muted-foreground">အဓိကမဏ္ဍိုင်များ - နိုင်ငံတကာကုန်သွယ်ရေး၏ အခြေခံအုတ်မြစ်</p>
+            <p className="text-base sm:text-lg text-foreground leading-relaxed">
               ကုန်သွယ်မှုခရီးစဉ်တိုင်းဟာ မဏ္ဍိုင်နှစ်ခုပေါ်မှာ တည်မှီနေပါတယ်။ အဲဒါတွေကတော့ စာရွက်စာတမ်းပိုင်းနဲ့ လက်တွေ့လုပ်ငန်းစဉ်ပိုင်းတို့ပဲ ဖြစ်ပါတယ်။ ဒီနှစ်ခုလုံးကို ကျွမ်းကျင်ရင် သင်ဟာ ဒီဂိမ်းရဲ့ အရှင်သခင်ဖြစ်လာပါလိမ့်မယ်။
             </p>
           </div>
@@ -82,12 +82,12 @@ export default function ThePillars() {
                 <BookOpen className="w-8 h-8" />
               </div>
               <div>
-                <h2 className="text-4xl font-bold">{documentation.title}</h2>
-                <p className="text-lg text-muted-foreground mt-2">{documentation.subtitle}</p>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">{documentation.title}</h2>
+                <p className="text-base sm:text-lg text-muted-foreground mt-2">{documentation.subtitle}</p>
               </div>
             </div>
 
-            <p className="text-lg text-foreground leading-relaxed max-w-3xl">{documentation.description}</p>
+            <p className="text-base sm:text-lg text-foreground leading-relaxed max-w-3xl">{documentation.description}</p>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {documentation.items.map((item, idx) => (
@@ -117,12 +117,12 @@ export default function ThePillars() {
                 <Briefcase className="w-8 h-8" />
               </div>
               <div>
-                <h2 className="text-4xl font-bold">{operations.title}</h2>
-                <p className="text-lg text-muted-foreground mt-2">{operations.subtitle}</p>
+                <h2 className="text-2xl sm:text-3xl md:text-4xl font-bold">{operations.title}</h2>
+                <p className="text-base sm:text-lg text-muted-foreground mt-2">{operations.subtitle}</p>
               </div>
             </div>
 
-            <p className="text-lg text-foreground leading-relaxed max-w-3xl">{operations.description}</p>
+            <p className="text-base sm:text-lg text-foreground leading-relaxed max-w-3xl">{operations.description}</p>
 
             <div className="space-y-6">
               {operations.stages.map((stage, idx) => (
@@ -157,10 +157,10 @@ export default function ThePillars() {
         <div className="container">
           <Card className="border-primary/50 neon-border">
             <CardHeader>
-              <CardTitle className="text-3xl">The Integration</CardTitle>
+              <CardTitle className="text-2xl sm:text-3xl">The Integration</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <p className="text-lg leading-relaxed">
+              <p className="text-base sm:text-lg leading-relaxed">
                 Documentation and Operations aren't separate. They're intertwined. Your documentation proves your operations. Your operations validate your documentation. Master both, and you master trade.
               </p>
               <p className="text-muted-foreground leading-relaxed">

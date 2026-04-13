@@ -63,12 +63,12 @@ export default function Home() {
         <div className="container relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <div className="space-y-4">
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter">
                 <span className="neon-glow">လက်ျာ</span>
                 <br />
                 <span className="text-foreground">LatYar</span>
               </h1>
-              <p className="text-xl md:text-2xl text-muted-foreground">
+              <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground">
                 Gateway to Global Trade: Full Knowledge Sharing Hub
               </p>
             </div>
@@ -108,8 +108,8 @@ export default function Home() {
         <div className="container">
           <div className="space-y-12">
             <div className="text-center space-y-3">
-              <h2 className="text-4xl md:text-5xl font-bold">Six Pillars of Trade Mastery</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">Six Pillars of Trade Mastery</h2>
+              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
                 Navigate the complete landscape of international trade and logistics
               </p>
             </div>
@@ -151,8 +151,8 @@ export default function Home() {
         <div className="container">
           <div className="space-y-12">
             <div className="text-center space-y-3">
-              <h2 className="text-4xl md:text-5xl font-bold">Why LatYar?</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">Why LatYar?</h2>
+              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
                 Built for traders who demand precision, strategy, and real-world insights
               </p>
             </div>
@@ -224,8 +224,8 @@ export default function Home() {
         <div className="container">
           <div className="space-y-12">
             <div className="text-center space-y-3">
-              <h2 className="text-4xl md:text-5xl font-bold">Future Trends & Technology</h2>
-              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
+              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">Future Trends & Technology</h2>
+              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
                 2026-2027 အတွင်း မျှော်မှန်းထားသော နည်းပညာနှင့် မူဝါဒအပြောင်းအလဲများ။
               </p>
             </div>
