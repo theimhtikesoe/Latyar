@@ -1,13 +1,42 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { ChevronLeft, ArrowUp, Home } from "lucide-react";
+import { 
+  ChevronLeft, 
+  ArrowUp, 
+  Home, 
+  ChevronDown, 
+  BookOpen, 
+  Briefcase, 
+  TrendingUp, 
+  Zap, 
+  Globe, 
+  Map,
+  Menu,
+  X
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
 export default function Navigation() {
   const [location, setLocation] = useLocation();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  const modules = [
+    { id: "pillars", icon: BookOpen, label: "The Pillars", href: "/pillars" },
+    { id: "compliance", icon: Briefcase, label: "Compliance Hub", href: "/compliance" },
+    { id: "market-pulse", icon: TrendingUp, label: "Market Pulse", href: "/market-pulse" },
+    { id: "trade-mastery", icon: Zap, label: "Trade Mastery", href: "/trade-mastery" },
+    { id: "geopolitics", icon: Globe, label: "Geopolitics", href: "/geopolitics" },
+    { id: "sample-projects", icon: Map, label: "Sample Projects", href: "/sample-projects" },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -19,6 +48,11 @@ export default function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mobile menu on location change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location]);
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -28,8 +62,8 @@ export default function Navigation() {
     window.history.back();
   };
 
-  const goHome = () => {
-    setLocation("/");
+  const navigateTo = (href: string) => {
+    setLocation(href);
   };
 
   return (
@@ -38,8 +72,8 @@ export default function Navigation() {
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
-          isScrolled 
-            ? "bg-background/80 backdrop-blur-md border-primary/20 py-3" 
+          isScrolled || isMobileMenuOpen
+            ? "bg-background/95 backdrop-blur-md border-primary/20 py-3" 
             : "bg-transparent border-transparent py-5"
         )}
       >
@@ -58,18 +92,19 @@ export default function Navigation() {
             )}
             <div 
               className="font-bold text-xl cursor-pointer flex items-center gap-2"
-              onClick={goHome}
+              onClick={() => navigateTo("/")}
             >
               <span className="text-primary neon-glow">လက်ျာ</span>
               <span className="hidden sm:inline text-foreground/80 text-sm font-medium tracking-widest">LATYAR</span>
             </div>
           </div>
 
-          <nav className="flex items-center gap-4">
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-2">
             <Button
               variant="ghost"
               size="sm"
-              onClick={goHome}
+              onClick={() => navigateTo("/")}
               className={cn(
                 "text-foreground/70 hover:text-primary hover:bg-primary/10",
                 location === "/" && "text-primary bg-primary/10"
@@ -78,8 +113,99 @@ export default function Navigation() {
               <Home className="w-4 h-4 mr-2" />
               Home
             </Button>
+
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className={cn(
+                    "text-foreground/70 hover:text-primary hover:bg-primary/10",
+                    location !== "/" && location !== "/404" && "text-primary bg-primary/10"
+                  )}
+                >
+                  Modules
+                  <ChevronDown className="w-4 h-4 ml-1" />
+                </Button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur-md border-primary/20">
+                {modules.map((module) => {
+                  const Icon = module.icon;
+                  return (
+                    <DropdownMenuItem
+                      key={module.id}
+                      onClick={() => navigateTo(module.href)}
+                      className={cn(
+                        "flex items-center gap-3 cursor-pointer py-3 focus:bg-primary/10 focus:text-primary",
+                        location === module.href && "bg-primary/10 text-primary"
+                      )}
+                    >
+                      <Icon className="w-4 h-4" />
+                      <span className="font-medium">{module.label}</span>
+                    </DropdownMenuItem>
+                  );
+                })}
+              </DropdownMenuContent>
+            </DropdownMenu>
           </nav>
+
+          {/* Mobile Menu Toggle */}
+          <div className="md:hidden flex items-center">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="text-primary"
+            >
+              {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </Button>
+          </div>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-md border-b border-primary/20 py-4 px-6 animate-in slide-in-from-top duration-300">
+            <div className="flex flex-col gap-2">
+              <Button
+                variant="ghost"
+                className={cn(
+                  "justify-start text-lg font-semibold",
+                  location === "/" ? "text-primary bg-primary/10" : "text-foreground/70"
+                )}
+                onClick={() => navigateTo("/")}
+              >
+                <Home className="w-5 h-5 mr-3" />
+                Home
+              </Button>
+              
+              <div className="mt-4 mb-2 px-4">
+                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Trade Modules</p>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-1">
+                {modules.map((module) => {
+                  const Icon = module.icon;
+                  return (
+                    <Button
+                      key={module.id}
+                      variant="ghost"
+                      className={cn(
+                        "justify-start py-6",
+                        location === module.href ? "text-primary bg-primary/10" : "text-foreground/70"
+                      )}
+                      onClick={() => navigateTo(module.href)}
+                    >
+                      <Icon className="w-5 h-5 mr-3" />
+                      <div className="flex flex-col items-start">
+                        <span className="font-semibold">{module.label}</span>
+                      </div>
+                    </Button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Scroll to Top Button */}
