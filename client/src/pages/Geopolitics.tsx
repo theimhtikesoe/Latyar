@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Globe, TrendingUp, AlertCircle } from "lucide-react";
+import { AlertCircle } from "lucide-react";
+import PageNavigation from "@/components/PageNavigation";
 
 export default function Geopolitics() {
   const corridors = [
@@ -154,6 +155,11 @@ export default function Geopolitics() {
               </div>
             </CardContent>
           </Card>
+
+          <PageNavigation 
+            nextHref="/sample-projects" 
+            nextLabel="Sample Projects" 
+          />
         </div>
       </section>
     </div>

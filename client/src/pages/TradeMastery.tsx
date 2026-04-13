@@ -1,6 +1,6 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Package, Truck, DollarSign } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { DollarSign } from "lucide-react";
+import PageNavigation from "@/components/PageNavigation";
 
 export default function TradeMastery() {
   const incoterms = [
@@ -154,6 +154,11 @@ export default function TradeMastery() {
               </div>
             </CardContent>
           </Card>
+
+          <PageNavigation 
+            nextHref="/geopolitics" 
+            nextLabel="Geopolitics" 
+          />
         </div>
       </section>
     </div>

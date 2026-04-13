@@ -1,10 +1,8 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { BookOpen, Briefcase, ArrowLeft, ArrowRight } from "lucide-react";
-import { useLocation } from "wouter";
-import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { BookOpen, Briefcase } from "lucide-react";
+import PageNavigation from "@/components/PageNavigation";
 
 export default function ThePillars() {
-  const [, navigate] = useLocation();
   const documentation = {
     title: "စာရွက်စာတမ်းပိုင်း (Documentation)",
     subtitle: "တိတ်ဆိတ်သော လုပ်ငန်းစဉ်",
@@ -173,28 +171,10 @@ export default function ThePillars() {
           </Card>
 
           {/* Navigation Footer */}
-          <div className="mt-12 flex flex-col sm:flex-row justify-between items-center gap-6 py-8 border-t border-border">
-            <Button 
-              variant="ghost" 
-              className="group text-muted-foreground hover:text-primary"
-              onClick={() => navigate("/")}
-            >
-              <ArrowLeft className="mr-2 w-4 h-4 transition-transform group-hover:-translate-x-1" />
-              Back to Home
-            </Button>
-            
-            <div className="flex items-center gap-4">
-              <span className="text-sm text-muted-foreground">Next Module:</span>
-              <Button 
-                variant="outline" 
-                className="border-primary text-primary hover:bg-primary/10 group"
-                onClick={() => navigate("/compliance")}
-              >
-                Compliance Hub
-                <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </div>
-          </div>
+          <PageNavigation 
+            nextHref="/compliance" 
+            nextLabel="Compliance Hub" 
+          />
         </div>
       </section>
     </div>

@@ -1,6 +1,6 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle2, AlertCircle, Zap } from "lucide-react";
+import PageNavigation from "@/components/PageNavigation";
 
 export default function ComplianceHub() {
   const dica = {
@@ -224,6 +224,11 @@ export default function ComplianceHub() {
               </div>
             </CardContent>
           </Card>
+
+          <PageNavigation 
+            nextHref="/market-pulse" 
+            nextLabel="Market Pulse" 
+          />
         </div>
       </section>
     </div>

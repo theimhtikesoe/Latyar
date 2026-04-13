@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { TrendingUp, AlertTriangle, DollarSign } from "lucide-react";
+import { TrendingUp, DollarSign } from "lucide-react";
+import PageNavigation from "@/components/PageNavigation";
 
 export default function MarketPulse() {
   const rules = [
@@ -71,6 +72,9 @@ export default function MarketPulse() {
                       <span className="text-3xl">{rule.icon}</span>
                     </div>
                   </CardHeader>
+                  <CardHeader>
+                    <CardTitle className="text-xl">{rule.name}</CardTitle>
+                  </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed">{rule.description}</p>
                   </CardContent>
@@ -137,6 +141,11 @@ export default function MarketPulse() {
               </div>
             </CardContent>
           </Card>
+
+          <PageNavigation 
+            nextHref="/trade-mastery" 
+            nextLabel="Trade Mastery" 
+          />
         </div>
       </section>
     </div>

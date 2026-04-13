@@ -1,5 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle2, TrendingUp, Package } from "lucide-react";
+import { CheckCircle2 } from "lucide-react";
+import PageNavigation from "@/components/PageNavigation";
 
 export default function SampleProjects() {
   const caseStudy = {
@@ -201,7 +202,9 @@ export default function SampleProjects() {
               {margins.map((scenario, idx) => (
                 <Card key={idx} className="border-border hover:border-primary/50 transition-colors">
                   <CardHeader>
-                    <CardTitle className="text-xl">{scenario.scenario}</CardTitle>
+                    <div className="flex items-center justify-between">
+                      <CardTitle className="text-xl">{scenario.scenario}</CardTitle>
+                    </div>
                     <CardDescription className="text-base mt-2">{scenario.description}</CardDescription>
                   </CardHeader>
                   <CardContent>
@@ -256,6 +259,8 @@ export default function SampleProjects() {
               </div>
             </CardContent>
           </Card>
+
+          <PageNavigation />
         </div>
       </section>
     </div>
