@@ -155,7 +155,12 @@ export default function Geopolitics() {
               </div>
             </CardContent>
           </Card>
+        </div>
+      </section>
 
+      {/* Navigation Footer */}
+      <section className="section-padding border-t border-border">
+        <div className="container">
           <PageNavigation 
             nextHref="/sample-projects" 
             nextLabel="Sample Projects" 

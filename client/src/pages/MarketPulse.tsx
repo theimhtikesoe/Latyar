@@ -72,9 +72,6 @@ export default function MarketPulse() {
                       <span className="text-3xl">{rule.icon}</span>
                     </div>
                   </CardHeader>
-                  <CardHeader>
-                    <CardTitle className="text-xl">{rule.name}</CardTitle>
-                  </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground leading-relaxed">{rule.description}</p>
                   </CardContent>
@@ -141,7 +138,12 @@ export default function MarketPulse() {
               </div>
             </CardContent>
           </Card>
+        </div>
+      </section>
 
+      {/* Navigation Footer */}
+      <section className="section-padding border-t border-border">
+        <div className="container">
           <PageNavigation 
             nextHref="/trade-mastery" 
             nextLabel="Trade Mastery" 

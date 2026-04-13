@@ -68,7 +68,7 @@ export default function ThePillars() {
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold neon-glow">The Pillars</h1>
             <p className="text-lg sm:text-xl text-muted-foreground">အဓိကမဏ္ဍိုင်များ - နိုင်ငံတကာကုန်သွယ်ရေး၏ အခြေခံအုတ်မြစ်</p>
             <p className="text-base sm:text-lg text-foreground leading-relaxed">
-              ကုန်သွယ်မှုခရီးစဉ်တိုင်းဟာ မဏ္ဍိုင်နှစ်ခုပေါ်မှာ တည်မှီနေပါတယ်။ အဲဒါတွေကတော့ စာရွက်စာတမ်းပိုင်းနဲ့ လက်တွေ့လုပ်ငန်းစဉ်ပိုင်းတို့ပဲ ဖြစ်ပါတယ်။ ဒီနှစ်ခုလုံးကို ကျွမ်းကျင်ရင် သင်ဟာ ဒီဂိမ်းရဲ့ အရှင်သခင်ဖြစ်လာပါလိမ့်မယ်။
+              ကုန်သွယ်မှုခရီးစဉ်တိုင်းဟာ မဏ္ဍိုင်နှစ်ခုပေါ်မှာ တည်မှီနေပါတယ်။ အဲဒါတွေကတော့ စာရွက်စာတမ်းပိုင်းနဲ့ လက်တွေ့လုပ်ငန်းစဉ်ပိုင်းတို့ပဲ ဖြစ်ပါတယ်။ ဒီနှစ်ခုလုံးကို ကျွမ်းကျင်ရင် သင်ဟာ ဒီဂိမ်းရဲ့ အရှင်သခန်ဖြစ်လာပါလိမ့်မယ်။
             </p>
           </div>
         </div>
@@ -169,8 +169,12 @@ export default function ThePillars() {
               </p>
             </CardContent>
           </Card>
+        </div>
+      </section>
 
-          {/* Navigation Footer */}
+      {/* Navigation Footer */}
+      <section className="section-padding border-t border-border">
+        <div className="container">
           <PageNavigation 
             nextHref="/compliance" 
             nextLabel="Compliance Hub" 

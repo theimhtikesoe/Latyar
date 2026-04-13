@@ -154,7 +154,12 @@ export default function TradeMastery() {
               </div>
             </CardContent>
           </Card>
+        </div>
+      </section>
 
+      {/* Navigation Footer */}
+      <section className="section-padding border-t border-border">
+        <div className="container">
           <PageNavigation 
             nextHref="/geopolitics" 
             nextLabel="Geopolitics" 
