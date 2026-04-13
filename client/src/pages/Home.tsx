@@ -63,12 +63,12 @@ export default function Home() {
         <div className="container relative z-10">
           <div className="max-w-4xl mx-auto text-center space-y-8">
             <div className="space-y-4">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter">
-                <span className="neon-glow">လက်ျာ</span>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold tracking-tighter">
+                <span className="neon-glow">လချစ်ရာ</span>
                 <br />
                 <span className="text-foreground">LatYar</span>
               </h1>
-              <p className="text-lg sm:text-xl md:text-2xl text-muted-foreground">
+              <p className="text-xl md:text-2xl text-muted-foreground">
                 Gateway to Global Trade: Full Knowledge Sharing Hub
               </p>
             </div>
@@ -108,8 +108,8 @@ export default function Home() {
         <div className="container">
           <div className="space-y-12">
             <div className="text-center space-y-3">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">Six Pillars of Trade Mastery</h2>
-              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-bold">Six Pillars of Trade Mastery</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Navigate the complete landscape of international trade and logistics
               </p>
             </div>
@@ -120,7 +120,7 @@ export default function Home() {
                 return (
                   <Card
                     key={module.id}
-                    className="group cursor-pointer hover:neon-border transition-all duration-300 border-border hover:border-primary"
+                    className="group cursor-pointer hover:neon-border transition-all duration-300 border-border hover:border-primary active:scale-[0.98] touch-manipulation"
                     onClick={() => navigate(module.href)}
                   >
                     <CardHeader>
@@ -128,8 +128,8 @@ export default function Home() {
                         <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                           <Icon className="w-6 h-6" />
                         </div>
-                        <div className="flex items-center text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                          <span className="text-xs font-bold uppercase tracking-wider">Open Module</span>
+                        <div className="flex items-center text-primary transition-all transform translate-x-0 md:opacity-0 md:group-hover:opacity-100 md:translate-x-2 md:group-hover:translate-x-0">
+                          <span className="text-xs font-bold uppercase tracking-wider">Open</span>
                           <ArrowRight className="w-4 h-4 ml-1" />
                         </div>
                       </div>
@@ -160,8 +160,8 @@ export default function Home() {
         <div className="container">
           <div className="space-y-12">
             <div className="text-center space-y-3">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">Why LatYar?</h2>
-              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-bold">Why LatYar?</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 Built for traders who demand precision, strategy, and real-world insights
               </p>
             </div>
@@ -233,8 +233,8 @@ export default function Home() {
         <div className="container">
           <div className="space-y-12">
             <div className="text-center space-y-3">
-              <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold">Future Trends & Technology</h2>
-              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+              <h2 className="text-4xl md:text-5xl font-bold">Future Trends & Technology</h2>
+              <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
                 2026-2027 အတွင်း မျှော်မှန်းထားသော နည်းပညာနှင့် မူဝါဒအပြောင်းအလဲများ။
               </p>
             </div>
@@ -287,65 +287,27 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="section-padding bg-card/30">
-        <div className="container">
-          <div className="max-w-2xl mx-auto text-center space-y-8">
-            <div className="space-y-4">
-              <h2 className="text-4xl md:text-5xl font-bold">Ready to Master Trade?</h2>
-              <p className="text-lg text-muted-foreground">
-                Start with any module. Build your expertise. Scale your business.
-              </p>
-            </div>
-
-            <Button
-              size="lg"
-              className="bg-primary hover:bg-primary/90 text-primary-foreground px-8"
-              onClick={() => navigate("/pillars")}
-            >
-              Begin Your Journey
-              <ArrowRight className="ml-2 w-4 h-4" />
-            </Button>
-          </div>
+      <section className="section-padding bg-primary text-primary-foreground">
+        <div className="container text-center space-y-8">
+          <h2 className="text-4xl md:text-5xl font-bold">Ready to Master the Trade?</h2>
+          <p className="text-xl opacity-90 max-w-2xl mx-auto">
+            Join the elite circle of traders who understand the game.
+          </p>
+          <Button
+            size="lg"
+            variant="secondary"
+            className="bg-background text-foreground hover:bg-background/90"
+            onClick={() => navigate("/pillars")}
+          >
+            Get Started Now
+          </Button>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-12 bg-card/30">
-        <div className="container">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-            <div>
-              <h3 className="font-bold text-lg mb-4">LatYar</h3>
-              <p className="text-sm text-muted-foreground">Gateway to Global Trade</p>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Modules</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="/pillars" className="hover:text-primary transition-colors">The Pillars</a></li>
-                <li><a href="/compliance" className="hover:text-primary transition-colors">Compliance Hub</a></li>
-                <li><a href="/market-pulse" className="hover:text-primary transition-colors">Market Pulse</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Resources</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="/trade-mastery" className="hover:text-primary transition-colors">Trade Mastery</a></li>
-                <li><a href="/geopolitics" className="hover:text-primary transition-colors">Geopolitics</a></li>
-                <li><a href="/sample-projects" className="hover:text-primary transition-colors">Case Studies</a></li>
-              </ul>
-            </div>
-            <div>
-              <h4 className="font-semibold mb-4">Connect</h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
-                <li><a href="#" className="hover:text-primary transition-colors">Twitter</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">LinkedIn</a></li>
-                <li><a href="#" className="hover:text-primary transition-colors">Contact</a></li>
-              </ul>
-            </div>
-          </div>
-
-          <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
-            <p>© 2026 LatYar. Built by Rhyzoe. No sugarcoating, just real strategy.</p>
-          </div>
+      <footer className="py-12 border-t border-border">
+        <div className="container text-center text-muted-foreground">
+          <p>© 2026 LatYar. All rights reserved.</p>
         </div>
       </footer>
     </div>
