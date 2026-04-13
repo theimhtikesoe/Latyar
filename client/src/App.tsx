@@ -5,12 +5,23 @@ import { Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import Home from "./pages/Home";
-
+import ThePillars from "./pages/ThePillars";
+import ComplianceHub from "./pages/ComplianceHub";
+import MarketPulse from "./pages/MarketPulse";
+import TradeMastery from "./pages/TradeMastery";
+import Geopolitics from "./pages/Geopolitics";
+import SampleProjects from "./pages/SampleProjects";
 
 function Router() {
   return (
     <Switch>
       <Route path={"/"} component={Home} />
+      <Route path={"/pillars"} component={ThePillars} />
+      <Route path={"/compliance"} component={ComplianceHub} />
+      <Route path={"/market-pulse"} component={MarketPulse} />
+      <Route path={"/trade-mastery"} component={TradeMastery} />
+      <Route path={"/geopolitics"} component={Geopolitics} />
+      <Route path={"/sample-projects"} component={SampleProjects} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
@@ -18,17 +29,15 @@ function Router() {
   );
 }
 
-// NOTE: About Theme
-// - First choose a default theme according to your design style (dark or light bg), than change color palette in index.css
-//   to keep consistent foreground/background color across components
-// - If you want to make theme switchable, pass `switchable` ThemeProvider and use `useTheme` hook
+// Design: Neon-Noir Dark Mode
+// Theme: Dark background with cyan, orange, and purple neon accents
+// Philosophy: Legacy over Currency, Winning in the Storm
 
 function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider
-        defaultTheme="light"
-        // switchable
+        defaultTheme="dark"
       >
         <TooltipProvider>
           <Toaster />
