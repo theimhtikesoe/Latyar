@@ -7,6 +7,7 @@ import { ThemeProvider } from "./contexts/ThemeContext";
 import Navigation from "./components/Navigation";
 import Home from "./pages/Home";
 import ThePillars from "./pages/ThePillars";
+import ScrollToTop from "./components/ScrollToTop";
 import ComplianceHub from "./pages/ComplianceHub";
 import MarketPulse from "./pages/MarketPulse";
 import TradeMastery from "./pages/TradeMastery";
@@ -41,6 +42,7 @@ function App() {
         defaultTheme="dark"
       >
         <TooltipProvider>
+          <ScrollToTop />
           <Toaster />
           <Navigation />
           <main className="pt-16">
