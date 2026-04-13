@@ -128,14 +128,23 @@ export default function Home() {
                         <div className="p-2 rounded-lg bg-primary/10 text-primary group-hover:bg-primary/20 transition-colors">
                           <Icon className="w-6 h-6" />
                         </div>
+                        <div className="flex items-center text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                          <span className="text-xs font-bold uppercase tracking-wider">Open Module</span>
+                          <ArrowRight className="w-4 h-4 ml-1" />
+                        </div>
                       </div>
-                      <CardTitle className="text-xl mt-4">{module.label}</CardTitle>
-                      <CardDescription className="text-base">{module.description}</CardDescription>
+                      <CardTitle className="text-2xl mt-4 group-hover:text-primary transition-colors">
+                        {module.label}
+                      </CardTitle>
+                      <CardDescription className="text-base leading-relaxed">
+                        {module.description}
+                      </CardDescription>
                     </CardHeader>
                     <CardContent>
-                      <div className="flex items-center text-primary opacity-0 group-hover:opacity-100 transition-opacity">
-                        <span className="text-sm font-semibold">Explore</span>
-                        <ArrowRight className="w-4 h-4 ml-2" />
+                      <div className="pt-2 border-t border-border/50 group-hover:border-primary/30 transition-colors">
+                        <p className="text-sm text-muted-foreground group-hover:text-foreground transition-colors">
+                          Click to explore detailed guides and strategic insights for {module.label.toLowerCase()}.
+                        </p>
                       </div>
                     </CardContent>
                   </Card>
