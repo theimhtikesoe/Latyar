@@ -1,4 +1,4 @@
-import { openai } from "@ai-sdk/openai";
+import { createOpenAI, openai } from "@ai-sdk/openai";
 import { embed } from "ai";
 import { createClient } from "@supabase/supabase-js";
 
@@ -111,9 +111,13 @@ function createSupabaseClient() {
   });
 }
 
-async function createQueryEmbedding(query: string): Promise<number[]> {
+async function createQueryEmbedding(query: string, apiKey?: string): Promise<number[]> {
+  const openaiInstance = apiKey
+    ? createOpenAI({ apiKey })
+    : openai;
+
   const { embedding } = await embed({
-    model: openai.embedding("text-embedding-3-small"),
+    model: openaiInstance.embedding("text-embedding-3-small"),
     value: query,
   });
 
@@ -152,7 +156,7 @@ async function fetchLexicalFallback(query: string, limit: number): Promise<Seman
 
 export async function semanticSearchDocuments(
   query: string,
-  options?: { limit?: number }
+  options?: { limit?: number; apiKey?: string }
 ): Promise<SemanticSearchResponse> {
   const trimmedQuery = query.trim();
   if (!trimmedQuery) {
@@ -163,7 +167,7 @@ export async function semanticSearchDocuments(
   }
 
   const limit = normalizeLimit(options?.limit);
-  const embedding = await createQueryEmbedding(trimmedQuery);
+  const embedding = await createQueryEmbedding(trimmedQuery, options?.apiKey);
   const supabase = createSupabaseClient();
 
   const { data, error } = await supabase

@@ -15,9 +15,10 @@ async function startServer() {
   app.post("/api/search", async (req, res) => {
     const query = typeof req.body?.query === "string" ? req.body.query : "";
     const limit = typeof req.body?.limit === "number" ? req.body.limit : undefined;
+    const apiKey = typeof req.body?.apiKey === "string" ? req.body.apiKey : undefined;
 
     try {
-      const response = await semanticSearchDocuments(query, { limit });
+      const response = await semanticSearchDocuments(query, { limit, apiKey });
       const status = query.trim() ? 200 : 400;
       res.status(status).json(response);
     } catch (error) {
