@@ -105,8 +105,8 @@ function createSupabaseClient() {
   const supabaseUrl = SUPABASE_URL;
   const supabaseKey = SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!supabaseKey) {
-    throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY or SUPABASE_ANON_KEY");
+  if (!supabaseUrl || !supabaseKey) {
+    throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
   }
 
   return createClient(supabaseUrl, supabaseKey, {
@@ -117,8 +117,8 @@ function createSupabaseClient() {
 async function createQueryEmbedding(query: string, apiKey?: string): Promise<number[]> {
   const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
   
-  if (!effectiveApiKey) {
-    throw new Error("Missing OPENAI_API_KEY environment variable");
+  if (!effectiveApiKey || effectiveApiKey.includes("sk-proj-***")) {
+    throw new Error("Invalid or missing OPENAI_API_KEY");
   }
 
   const baseURL = "https://api.openai.com/v1";
@@ -180,18 +180,33 @@ export async function semanticSearchDocuments(
 
   const limit = normalizeLimit(options?.limit);
   const threshold = Number(process.env.SEMANTIC_SEARCH_THRESHOLD ?? DEFAULT_THRESHOLD);
-  const supabase = createSupabaseClient();
+  
+  let supabase;
+  try {
+    supabase = createSupabaseClient();
+  } catch (error) {
+    console.error("Supabase client creation failed:", error);
+    return {
+      results: [],
+      message: "Search service is currently unavailable due to configuration issues.",
+    };
+  }
   
   let embedding: number[];
   try {
     embedding = await createQueryEmbedding(trimmedQuery, options?.apiKey);
   } catch (error) {
     console.warn("Embedding failed, falling back to lexical search:", error);
-    const fallbackResults = await fetchLexicalFallback(trimmedQuery, limit);
-    return {
-      results: fallbackResults,
-      message: "Semantic search unavailable. Showing keyword matches instead.",
-    };
+    try {
+      const fallbackResults = await fetchLexicalFallback(trimmedQuery, limit);
+      return {
+        results: fallbackResults,
+        message: "Semantic search unavailable. Showing keyword matches instead.",
+      };
+    } catch (fallbackError) {
+      console.error("Lexical fallback also failed:", fallbackError);
+      throw fallbackError;
+    }
   }
 
   // Attempt to use Supabase RPC for vector search (much more efficient)
@@ -213,7 +228,12 @@ export async function semanticSearchDocuments(
   }
 
   // Fetch lexical results for hybrid search
-  const lexicalResults = await fetchLexicalFallback(trimmedQuery, limit);
+  let lexicalResults: SemanticSearchResult[] = [];
+  try {
+    lexicalResults = await fetchLexicalFallback(trimmedQuery, limit);
+  } catch (lexicalError) {
+    console.warn("Lexical search failed during hybrid phase:", lexicalError);
+  }
   
   // Combine and deduplicate results
   const combinedMap = new Map<string, SemanticSearchResult>();
