@@ -1,5 +1,5 @@
 
-import { semanticSearchDocuments } from "./Latyar/shared/semanticSearch";
+import { semanticSearchDocuments } from "./shared/semanticSearch";
 
 async function test() {
   console.log("Testing Semantic Search...");
@@ -17,8 +17,7 @@ async function test() {
     
     // Use the hardcoded key from the source for testing
     const hardcodedKey = "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";
-    
-    const response = await semanticSearchDocuments(query, { apiKey: hardcodedKey });
+    const response = await semanticSearchDocuments(query, { apiKey: process.env.OPENAI_API_KEY });
     console.log("Response:", JSON.stringify(response, null, 2));
   } catch (error) {
     console.error("Search failed:", error);
