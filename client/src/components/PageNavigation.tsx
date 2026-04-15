@@ -11,7 +11,7 @@ interface PageNavigationProps {
 
 export default function PageNavigation({
   prevHref = "/",
-  prevLabel = "Back to Home",
+  prevLabel = "ပင်မစာမျက်နှာသို့",
   nextHref,
   nextLabel,
 }: PageNavigationProps) {
@@ -30,7 +30,7 @@ export default function PageNavigation({
 
       {nextHref && nextLabel && (
         <div className="flex items-center gap-4">
-          <span className="text-sm text-muted-foreground">Next Module:</span>
+          <span className="text-sm text-muted-foreground">နောက်ထပ်ကဏ္ဍ:</span>
           <Button
             variant="outline"
             className="border-primary text-primary hover:bg-primary/10 group"

@@ -30,12 +30,12 @@ export default function Navigation() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const modules = [
-    { id: "pillars", icon: BookOpen, label: "The Pillars", href: "/pillars" },
-    { id: "compliance", icon: Briefcase, label: "Compliance Hub", href: "/compliance" },
-    { id: "market-pulse", icon: TrendingUp, label: "Market Pulse", href: "/market-pulse" },
-    { id: "trade-mastery", icon: Zap, label: "Trade Mastery", href: "/trade-mastery" },
-    { id: "geopolitics", icon: Globe, label: "Geopolitics", href: "/geopolitics" },
-    { id: "sample-projects", icon: Map, label: "Sample Projects", href: "/sample-projects" },
+    { id: "pillars", icon: BookOpen, label: "အဓိကမဏ္ဍိုင်များ", href: "/pillars" },
+    { id: "compliance", icon: Briefcase, label: "စည်းမျဉ်းလိုက်နာမှုဗဟို", href: "/compliance" },
+    { id: "market-pulse", icon: TrendingUp, label: "ဈေးကွက်စီးဆင်းမှု", href: "/market-pulse" },
+    { id: "trade-mastery", icon: Zap, label: "ကုန်သွယ်မှုကျွမ်းကျင်မှု", href: "/trade-mastery" },
+    { id: "geopolitics", icon: Globe, label: "ပထဝီနိုင်ငံရေး", href: "/geopolitics" },
+    { id: "sample-projects", icon: Map, label: "နမူနာစီမံကိန်းများ", href: "/sample-projects" },
   ];
 
   useEffect(() => {
@@ -85,7 +85,7 @@ export default function Navigation() {
                 size="icon"
                 onClick={goBack}
                 className="text-primary hover:bg-primary/10"
-                title="Back"
+                title="နောက်သို့"
               >
                 <ChevronLeft className="w-6 h-6" />
               </Button>
@@ -111,7 +111,7 @@ export default function Navigation() {
               )}
             >
               <Home className="w-4 h-4 mr-2" />
-              Home
+              ပင်မစာမျက်နှာ
             </Button>
 
             <DropdownMenu>
@@ -124,7 +124,7 @@ export default function Navigation() {
                     location !== "/" && location !== "/404" && "text-primary bg-primary/10"
                   )}
                 >
-                  Modules
+                  ကဏ္ဍများ
                   <ChevronDown className="w-4 h-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
@@ -175,11 +175,11 @@ export default function Navigation() {
                 onClick={() => navigateTo("/")}
               >
                 <Home className="w-5 h-5 mr-3" />
-                Home
+                ပင်မစာမျက်နှာ
               </Button>
               
               <div className="mt-4 mb-2 px-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Trade Modules</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">ကုန်သွယ်မှုကဏ္ဍများ</p>
               </div>
               
               <div className="grid grid-cols-1 gap-1">
@@ -217,7 +217,7 @@ export default function Navigation() {
           "fixed bottom-6 right-6 z-50 rounded-full shadow-lg transition-all duration-300 border border-primary/30 bg-background/80 backdrop-blur-sm text-primary hover:bg-primary hover:text-primary-foreground",
           showScrollTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
         )}
-        title="Scroll to Top"
+        title="အပေါ်သို့ပြန်သွားရန်"
       >
         <ArrowUp className="w-5 h-5" />
       </Button>

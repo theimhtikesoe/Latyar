@@ -5,21 +5,21 @@ import PageNavigation from "@/components/PageNavigation";
 export default function ComplianceHub() {
   const dica = {
     title: "DICA - အမျိုးအစားခွဲခြားခြင်း ကဏ္ဍ",
-    description: "Department of Internal Commerce Affairs",
+    description: "ရင်းနှီးမြှုပ်နှံမှုနှင့် ကုမ္ပဏီများ ညွှန်ကြားမှု ဦးစီးဌာန",
     systems: [
       {
-        name: "Quota System",
-        description: "ကုန်ပစ္စည်းအချို့မျိုးတွေ အကန့်အသတ်ရှိတယ်။ သင်ဘယ်လောက်ထုတ်လုပ်နိုင်ပါသလဲ။ ဒါဟာ အရေးကြီးတဲ့ မေးခွန်းပဲ။ အဖြေကို DICA ကို မေးပါ။",
+        name: "Quota စနစ်",
+        description: "ကုန်ပစ္စည်းအချို့ကို အရေအတွက် ကန့်သတ်ချက်ဖြင့်သာ တင်သွင်း/တင်ပို့ခွင့်ရှိသည်။ သင်ဘယ်လောက်လုပ်ဆောင်နိုင်သလဲဆိုသည်မှာ အရေးကြီးသော မေးခွန်းဖြစ်သည်။ ၎င်းအတွက် DICA ၏ စည်းမျဉ်းများကို လေ့လာပါ။",
         icon: "📊",
       },
       {
-        name: "Price Control",
-        description: "အချို့ကုန်ပစ္စည်းတွေ ဈေးကွက်ထိန်းချုပ်ခံရတယ်။ သင်မကြေးမုံရဲ့ အကွာအဝေးထဲမှာ ရှိရမယ်။ ဒါမှ ကောင်းမွန်တဲ့ အဆင့်ပြည့်ဝတဲ့ ကုန်သွယ်မှုပဲ ဖြစ်ပါတယ်။",
+        name: "ဈေးနှုန်းထိန်းချုပ်မှု",
+        description: "အချို့ကုန်ပစ္စည်းများသည် ဈေးကွက်အတွင်း ဈေးနှုန်းထိန်းချုပ်မှုအောက်တွင် ရှိသည်။ သတ်မှတ်ထားသော ဘောင်အတွင်းရှိနေမှသာ ကောင်းမွန်သော ကုန်သွယ်မှုဖြစ်စဉ်တစ်ခု ဖြစ်လာပါလိမ့်မည်။",
         icon: "💰",
       },
       {
-        name: "License Requirements",
-        description: "အချို့အရောင်းအဝယ်တွေ အထူးခွင့်ပြုချက်လိုတယ်။ ဒါမရှိရင် သင်ဟာ ကုန်သွယ်မှုမှုခြင်းတွေ ကျူးလွန်သူတစ်ယောက်ပဲ ဖြစ်သွားပါလိမ့်မယ်။",
+        name: "လိုင်စင်လိုအပ်ချက်များ",
+        description: "အချို့သော ကုန်သွယ်မှုများအတွက် အထူးခွင့်ပြုချက် လိုင်စင်များ လိုအပ်သည်။ ၎င်းမရှိဘဲ လုပ်ဆောင်ခြင်းသည် ဥပဒေကြောင်းအရ အခက်အခဲများ ရှိလာနိုင်ပါသည်။",
         icon: "🔐",
       },
     ],
@@ -27,22 +27,22 @@ export default function ComplianceHub() {
 
   const tradenet = {
     title: "Trade Net 2.0 - ဒီဂျစ်တယ်ကုန်သွယ်မှုစနစ်",
-    description: "Digital Trade System for Myanmar",
+    description: "မြန်မာနိုင်ငံ၏ အွန်လိုင်းကုန်သွယ်မှုစနစ်",
     features: [
       {
-        feature: "Online Licensing",
-        status: "Active",
-        description: "အွန်လိုင်းမှတစ်ဆင့် လိုင်စင်လျှောက်ထားနိုင်တယ်။ အချိန်သက်သာတယ်။ အဆင့်မြင့်တယ်။ ဒါဟာ အနာဂတ်ပါပဲ။",
+        feature: "အွန်လိုင်းလိုင်စင်လျှောက်ထားခြင်း",
+        status: "အသုံးပြုနိုင်သည်",
+        description: "အွန်လိုင်းမှတစ်ဆင့် လိုင်စင်များကို လွယ်ကူစွာ လျှောက်ထားနိုင်သည်။ အချိန်ကုန်သက်သာပြီး ပိုမိုထိရောက်သည်။",
       },
       {
-        feature: "Real-time Tracking",
-        status: "Active",
-        description: "သင့်ကုန်ပစ္စည်းတွေ ဘယ်မှာ ရှိလဲ။ အခုအချိန်မှာ သိနိုင်ပါတယ်။ အဆင့်မြင့်တဲ့ ဒီဂျစ်တယ်စနစ်တစ်ခုပဲ ဖြစ်ပါတယ်။",
+        feature: "အချိန်နှင့်တပြေးညီ ခြေရာခံခြင်း",
+        status: "အသုံးပြုနိုင်သည်",
+        description: "သင့်ကုန်ပစ္စည်းများ၏ အခြေအနေကို အချိန်မရွေး သိရှိနိုင်သည်။ အဆင့်မြင့် ဒီဂျစ်တယ်စနစ်တစ်ခု ဖြစ်သည်။",
       },
       {
-        feature: "Automated Clearance",
-        status: "Coming Soon",
-        description: "အကောက်ခွန်ရှင်းလင်းမှုကို အလိုအလျောက်လုပ်ဆောင်မယ်။ အချိန်ကုန်သည်။ ဒါဟာ အနာဂတ်ပါပဲ။",
+        feature: "အလိုအလျောက် ရှင်းလင်းရေးစနစ်",
+        status: "မကြာမီလာမည်",
+        description: "အကောက်ခွန်ရှင်းလင်းရေး လုပ်ငန်းစဉ်များကို အလိုအလျောက် လုပ်ဆောင်ပေးမည့် စနစ်ဖြစ်သည်။",
       },
     ],
   };
@@ -54,27 +54,27 @@ export default function ComplianceHub() {
       {
         step: 1,
         name: "စာရွက်စာတမ်းတင်သွင်းခြင်း",
-        details: "Invoice, BL, LC, License အားလုံး အွန်လိုင်းမှတစ်ဆင့် တင်သွင်းပါ။ ဒါတွေ မှားမှားမခြင်းမှုမရှိရင် အဆင့်သွားမယ်။",
+        details: "Invoice, BL, LC, License အစရှိသည်တို့ကို အွန်လိုင်းမှ တင်သွင်းရမည်။ အချက်အလက်မှန်ကန်ရန် အထူးအရေးကြီးသည်။",
       },
       {
         step: 2,
         name: "အခြေခံအချက်အလက်စစ်ဆေးခြင်း",
-        details: "စနစ်ကို သင့်စာရွက်စာတမ်းတွေ စစ်ဆေးမယ်။ အမှားအယွင်းတွေ ရှာမယ်။ ရှိရင် ပြန်လည်ပြင်ဆင်ရမယ်။",
+        details: "စနစ်မှ သင့်စာရွက်စာတမ်းများကို အလိုအလျောက် စစ်ဆေးမည်ဖြစ်သည်။ အမှားအယွင်းရှိပါက ပြန်လည်ပြင်ဆင်ရမည်။",
       },
       {
         step: 3,
-        name: "ကုန်ပစ္စည်းကို ရုံးတွင်း ပြသခြင်း",
-        details: "သင့်ကုန်ပစ္စည်းတွေကို အကောက်ခွန်ရုံးတွင်း ပြသရမယ်။ ကုန်ပစ္စည်းအမျိုးအစား၊ အရေအတွက်၊ အခြေအနေတွေ စစ်ဆေးမယ်။",
+        name: "ကုန်ပစ္စည်းစစ်ဆေးခြင်း",
+        details: "ကုန်ပစ္စည်းအမျိုးအစား၊ အရေအတွက်နှင့် အခြေအနေများကို အကောက်ခွန်အရာရှိများက စစ်ဆေးမည်ဖြစ်သည်။",
       },
       {
         step: 4,
         name: "အကောက်ခွန်ပေးချေခြင်း",
-        details: "အကောက်ခွန်တွေ ဆုံးဖြတ်မယ်။ သင်ပေးချေရမယ်။ အဲဒါပြီးရင် ကုန်ပစ္စည်းတွေ ထုတ်ယူနိုင်ပါတယ်။",
+        details: "သတ်မှတ်ထားသော အကောက်ခွန်နှုန်းထားများအတိုင်း ပေးချေရမည်။ ထို့နောက်မှသာ ကုန်ပစ္စည်းထုတ်ယူခွင့် ရရှိမည်ဖြစ်သည်။",
       },
       {
         step: 5,
         name: "ကုန်ပစ္စည်းထုတ်ယူခြင်း",
-        details: "အကောက်ခွန်ပေးချေပြီးရင် သင့်ကုန်ပစ္စည်းတွေကို ထုတ်ယူနိုင်ပါတယ်။ လုပ်ငန်းစဉ်ပြီးဆုံးပါပြီ။",
+        details: "လုပ်ငန်းစဉ်အားလုံး ပြီးဆုံးပါက သင့်ကုန်ပစ္စည်းများကို ဆိပ်ကမ်း သို့မဟုတ် ဂိုဒေါင်မှ ထုတ်ယူနိုင်ပြီဖြစ်သည်။",
       },
     ],
   };
@@ -85,10 +85,10 @@ export default function ComplianceHub() {
       <section className="section-padding border-b border-border">
         <div className="container">
           <div className="max-w-3xl space-y-4">
-            <h1 className="text-5xl md:text-6xl font-bold neon-glow">Compliance Hub</h1>
-            <p className="text-xl text-muted-foreground">Navigate the System - စည်းမျဉ်းစည်းကမ်းတွေကို နည်းပညာအရ ကျော်လွန်ခြင်း</p>
+            <h1 className="text-5xl md:text-6xl font-bold neon-glow">စည်းမျဉ်းလိုက်နာမှုဗဟို</h1>
+            <p className="text-xl text-muted-foreground">စနစ်ကို နားလည်ပါ - စည်းမျဉ်းစည်းကမ်းများကို ကျွမ်းကျင်စွာ အသုံးချခြင်း</p>
             <p className="text-lg text-foreground leading-relaxed">
-              Myanmar's trade compliance system is evolving. DICA sets the rules. Trade Net 2.0 digitizes the process. MACCS executes the clearance. Understand all three, and you'll never be caught off guard.
+              မြန်မာနိုင်ငံ၏ ကုန်သွယ်မှုစနစ်သည် ပြောင်းလဲတိုးတက်နေသည်။ DICA က စည်းမျဉ်းများကို သတ်မှတ်သည်။ Trade Net 2.0 က လုပ်ငန်းစဉ်များကို ဒီဂျစ်တယ်ပြောင်းလဲပေးသည်။ MACCS က ရှင်းလင်းရေးလုပ်ငန်းစဉ်များကို လုပ်ဆောင်သည်။ ဤသုံးခုစလုံးကို နားလည်ခြင်းဖြင့် သင်သည် ကုန်သွယ်မှုနယ်ပယ်တွင် အမြဲအဆင်သင့် ဖြစ်နေပါလိမ့်မည်။
             </p>
           </div>
         </div>
@@ -138,7 +138,7 @@ export default function ComplianceHub() {
                     <div className="flex items-center justify-between">
                       <CardTitle className="text-xl">{item.feature}</CardTitle>
                       <div className="flex items-center gap-2">
-                        {item.status === "Active" ? (
+                        {item.status === "အသုံးပြုနိုင်သည်" ? (
                           <div className="flex items-center gap-2 text-primary">
                             <CheckCircle2 className="w-5 h-5" />
                             <span className="text-sm font-semibold">{item.status}</span>
@@ -206,21 +206,21 @@ export default function ComplianceHub() {
             <CardHeader>
               <CardTitle className="text-3xl flex items-center gap-3">
                 <Zap className="w-8 h-8 text-primary" />
-                Key Takeaways
+                အဓိကမှတ်သားဖွယ်များ
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <div>
-                <h4 className="font-semibold text-lg mb-2">DICA Sets the Rules</h4>
-                <p className="text-muted-foreground">Quotas, price controls, and licensing requirements. Know them before you trade.</p>
+                <h4 className="font-semibold text-lg mb-2">DICA က စည်းမျဉ်းများကို သတ်မှတ်သည်</h4>
+                <p className="text-muted-foreground">Quota များ၊ ဈေးနှုန်းထိန်းချုပ်မှုများနှင့် လိုင်စင်လိုအပ်ချက်များကို မကုန်သွယ်မီ ကြိုတင်လေ့လာပါ။</p>
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">Trade Net 2.0 Digitizes Everything</h4>
-                <p className="text-muted-foreground">Online licensing, real-time tracking, automated processes. The system is moving digital. Move with it.</p>
+                <h4 className="font-semibold text-lg mb-2">Trade Net 2.0 က အရာအားလုံးကို ဒီဂျစ်တယ်ပြောင်းလဲသည်</h4>
+                <p className="text-muted-foreground">အွန်လိုင်းလိုင်စင်၊ အချိန်နှင့်တပြေးညီ ခြေရာခံခြင်း။ စနစ်က ဒီဂျစ်တယ်သို့ ကူးပြောင်းနေပြီဖြစ်ရာ သင်လည်း လိုက်ပါပြောင်းလဲပါ။</p>
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">MACCS Executes the Clearance</h4>
-                <p className="text-muted-foreground">Five steps from documentation to delivery. Master this process, and you'll clear goods faster than your competitors.</p>
+                <h4 className="font-semibold text-lg mb-2">MACCS က ရှင်းလင်းရေးကို လုပ်ဆောင်သည်</h4>
+                <p className="text-muted-foreground">စာရွက်စာတမ်းတင်သွင်းခြင်းမှ ကုန်ပစ္စည်းထုတ်ယူခြင်းအထိ အဆင့် ၅ ဆင့်ရှိသည်။ ဤလုပ်ငန်းစဉ်ကို ကျွမ်းကျင်ပါက အခြားသူများထက် ပိုမိုမြန်ဆန်ပါလိမ့်မည်။</p>
               </div>
             </CardContent>
           </Card>
@@ -232,7 +232,7 @@ export default function ComplianceHub() {
         <div className="container">
           <PageNavigation 
             nextHref="/market-pulse" 
-            nextLabel="Market Pulse" 
+            nextLabel="ဈေးကွက်စီးဆင်းမှု" 
           />
         </div>
       </section>

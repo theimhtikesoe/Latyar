@@ -6,42 +6,42 @@ export default function TradeMastery() {
   const incoterms = [
     {
       term: "FOB (Free on Board)",
-      description: "သင်ဘူတ်ပေါ်တွင် ကုန်ပစ္စည်းများ ထည့်သွင်းပြီးအခါ ဝယ်ယူသူ၏ တာဝန်ဖြစ်သွားပါတယ်။ သင်ဟာ ပို့ဆောင်ခ ခြင်းအတွက် ကုန်ကျမည်မရှိပါဘူး။",
+      description: "ကုန်ပစ္စည်းများကို သင်္ဘောပေါ်သို့ တင်ဆောင်ပြီးသည်နှင့် တာဝန်မှာ ဝယ်ယူသူထံသို့ ကူးပြောင်းသွားသည်။ သင်သည် ပို့ဆောင်ခအတွက် ပေးချေရန် မလိုအပ်ပါ။",
       icon: "🚢",
     },
     {
       term: "CIF (Cost, Insurance & Freight)",
-      description: "သင်ဟာ ကုန်ကျ၊ အာမခံ နှင့် ပို့ဆောင်ခြင်းအတွက် ကုန်ကျမည်ကို ပေးချေရပါတယ်။ ဝယ်ယူသူ ကုန်ပစ္စည်းများ လက်ခံရယူသည်အထိ သင့်ကုန်ကျမည်ဖြစ်ပါတယ်။",
+      description: "ကုန်ပစ္စည်းတန်ဖိုး၊ အာမခံကြေးနှင့် သယ်ယူပို့ဆောင်ခများကို သင်က ပေးချေရသည်။ ဝယ်ယူသူထံသို့ ကုန်ပစ္စည်းများ ရောက်ရှိသည်အထိ သင်က တာဝန်ယူရသည်။",
       icon: "📦",
     },
     {
       term: "DDP (Delivered Duty Paid)",
-      description: "သင်ဟာ အားလုံးကုန်ကျမည်ကို ပေးချေရပါတယ်။ ဝယ်ယူသူ ကုန်ပစ္စည်းများ လက်ခံရယူသည်အထိ။ ဒါဟာ အဆင့်မြင့်တဲ့ ကုန်သွယ်မှုစနစ်ပါပဲ။",
+      description: "ကုန်ကျစရိတ်အားလုံးနှင့် အခွန်အခများကို သင်က ပေးချေရသည်။ ဝယ်ယူသူထံသို့ ကုန်ပစ္စည်းများ အရောက်ပို့ဆောင်ပေးရသည့် အဆင့်မြင့်စနစ်ဖြစ်သည်။",
       icon: "✈️",
     },
     {
       term: "EXW (Ex Works)",
-      description: "ကုန်ပစ္စည်းများ သင့်ရုံးမှ ထုတ်ယူသည်အခါ သင့်တာဝန် ကုန်ဆုံးပါတယ်။ ဝယ်ယူသူ ကုန်ပစ္စည်းများ ပို့ဆောင်ရန် တာဝန်ယူရပါတယ်။",
+      description: "ကုန်ပစ္စည်းများကို သင့်စက်ရုံ သို့မဟုတ် ဂိုဒေါင်မှ ထုတ်ယူသည်နှင့် သင့်တာဝန် ပြီးဆုံးသည်။ ဝယ်ယူသူက သယ်ယူပို့ဆောင်ရေးအတွက် တာဝန်ယူရသည်။",
       icon: "🏭",
     },
   ];
 
   const logistics = [
     {
-      step: "သင်ခြင်း (Warehousing)",
-      details: "ကုန်ပစ္စည်းများ သင်ခြင်းအတွက် သင့်လျော်သော သင်ခန်းများ လိုအပ်ပါတယ်။ အပူချိန်ထိန်းချုပ်မှု၊ စိုထိုင်းမှုထိန်းချုပ်မှု နှင့် လုံခြုံရေးတွေ အရေးကြီးပါတယ်။",
+      step: "သိုလှောင်ခြင်း (Warehousing)",
+      details: "ကုန်ပစ္စည်းများ သိုလှောင်ရန် သင့်လျော်သော နေရာများ လိုအပ်သည်။ အပူချိန်၊ စိုထိုင်းဆနှင့် လုံခြုံရေးတို့မှာ အလွန်အရေးကြီးသည်။",
     },
     {
-      step: "ကုန်ပစ္စည်းတင်ပို့ခြင်း (Shipping)",
-      details: "ကုန်ပစ္စည်းများ သင့်ဝယ်ယူသူထံ ရောက်သွားရန် အကောင်းဆုံး ကုန်ပစ္စည်းတင်ပို့ခြင်းနည်းလမ်း ရွေးချယ်ရပါတယ်။ ရေလမ်း၊ လေလမ်း၊ ကုန်တင်ယာဉ်လမ်း သို့မဟုတ် ရထားလမ်း။",
+      step: "သယ်ယူပို့ဆောင်ခြင်း (Shipping)",
+      details: "ဝယ်ယူသူထံ ရောက်ရှိရန် အကောင်းဆုံးလမ်းကြောင်းကို ရွေးချယ်ရမည်။ ရေလမ်း၊ လေလမ်း သို့မဟုတ် ကုန်းလမ်း—အခြေအနေပေါ်မူတည်၍ ဆုံးဖြတ်ရမည်။",
     },
     {
       step: "အကောက်ခွန်ရှင်းလင်းခြင်း (Customs Clearance)",
-      details: "ကုန်ပစ္စည်းများ နိုင်ငံတကာ နယ်စပ်ကို ဖြတ်ကျော်သည်အခါ အကောက်ခွန်ရှင်းလင်းခြင်း လုပ်ငန်းစဉ် လိုအပ်ပါတယ်။ ဒါဟာ အချိန်ကုန်သည်။ အဆင့်မြင့်တဲ့ အကောက်ခွန်ကုန်သည်များ လိုအပ်ပါတယ်။",
+      details: "နိုင်ငံတကာနယ်စပ်ကို ဖြတ်ကျော်ရာတွင် အကောက်ခွန်လုပ်ငန်းစဉ်များ လိုအပ်သည်။ ကျွမ်းကျင်သော အကောက်ခွန်ပွဲစားများဖြင့် လုပ်ဆောင်ရန် လိုအပ်သည်။",
     },
     {
-      step: "နောက်ဆုံးမိုင်းတွင် ပို့ဆောင်ခြင်း (Last Mile Delivery)",
-      details: "ကုန်ပစ္စည်းများ ဝယ်ယူသူထံ ရောက်သွားရန် နောက်ဆုံးအဆင့်ပါပဲ။ ဒါဟာ အရေးကြီးတဲ့ အဆင့်ပါပဲ။ ဝယ်ယူသူ ကုန်ပစ္စည်းများ ကောင်းမွန်သောအခြေအနေတွင် လက်ခံရယူရမယ်။",
+      step: "နောက်ဆုံးအဆင့် ပို့ဆောင်ခြင်း (Last Mile Delivery)",
+      details: "ဝယ်ယူသူ၏ လက်ဝယ်သို့ အရောက်ပို့ဆောင်ပေးသည့် နောက်ဆုံးအဆင့်ဖြစ်သည်။ ကုန်ပစ္စည်းများ ကောင်းမွန်သော အခြေအနေဖြင့် ရောက်ရှိရန် အရေးကြီးသည်။",
     },
   ];
 
@@ -51,10 +51,10 @@ export default function TradeMastery() {
       <section className="section-padding border-b border-border">
         <div className="container">
           <div className="max-w-3xl space-y-4">
-            <h1 className="text-5xl md:text-6xl font-bold neon-glow">Trade Mastery</h1>
-            <p className="text-xl text-muted-foreground">Advanced Strategies & Frameworks - အဆင့်မြင့်တဲ့ ကုန်သွယ်မှုလုပ်ငန်းစဉ်များ</p>
+            <h1 className="text-5xl md:text-6xl font-bold neon-glow">ကုန်သွယ်မှုကျွမ်းကျင်မှု</h1>
+            <p className="text-xl text-muted-foreground">အဆင့်မြင့်မဟာဗျူဟာများနှင့် လုပ်ငန်းစဉ်များ</p>
             <p className="text-lg text-foreground leading-relaxed">
-              Incoterms define who pays for what. Logistics determines how goods move. Master both, and you'll optimize every transaction.
+              Incoterms က ကုန်ကျစရိတ်များကို မည်သူက ပေးချေရမည်ကို သတ်မှတ်ပေးသည်။ ပို့ဆောင်ရေးစနစ် (Logistics) က ကုန်စည်များ မည်သို့ရွေ့လျားမည်ကို ဆုံးဖြတ်ပေးသည်။ ဤနှစ်ခုလုံးကို ကျွမ်းကျင်ပါက သင်၏ ကုန်သွယ်မှုတိုင်းကို အကောင်းဆုံး ဖြစ်စေပါလိမ့်မည်။
             </p>
           </div>
         </div>
@@ -65,8 +65,8 @@ export default function TradeMastery() {
         <div className="container">
           <div className="space-y-12">
             <div>
-              <h2 className="text-4xl font-bold mb-2">Incoterms 2020</h2>
-              <p className="text-lg text-muted-foreground">International Commercial Terms - Who pays for what?</p>
+              <h2 className="text-4xl font-bold mb-2">Incoterms ၂၀၂၀</h2>
+              <p className="text-lg text-muted-foreground">နိုင်ငံတကာ ကုန်သွယ်မှုဆိုင်ရာ သတ်မှတ်ချက်များ - မည်သူက ဘာအတွက် ပေးချေရမည်နည်း?</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -93,8 +93,8 @@ export default function TradeMastery() {
         <div className="container">
           <div className="space-y-12">
             <div>
-              <h2 className="text-4xl font-bold mb-2">Logistics Framework</h2>
-              <p className="text-lg text-muted-foreground">From warehouse to doorstep</p>
+              <h2 className="text-4xl font-bold mb-2">ပို့ဆောင်ရေးစနစ် (Logistics Framework)</h2>
+              <p className="text-lg text-muted-foreground">ဂိုဒေါင်မှ ဝယ်ယူသူ၏ အိမ်တံခါးဝအထိ</p>
             </div>
 
             <div className="space-y-6">
@@ -132,25 +132,25 @@ export default function TradeMastery() {
             <CardHeader>
               <CardTitle className="text-3xl flex items-center gap-3">
                 <DollarSign className="w-8 h-8 text-primary" />
-                Cost Optimization Tips
+                ကုန်ကျစရိတ် လျှော့ချရန် အကြံပြုချက်များ
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h4 className="font-semibold text-lg mb-2">1. Choose the Right Incoterm</h4>
-                <p className="text-muted-foreground">FOB saves you money on shipping but increases buyer risk. CIF and DDP shift risk to you but build buyer confidence. Choose based on your relationship and cash flow.</p>
+                <h4 className="font-semibold text-lg mb-2">၁။ မှန်ကန်သော Incoterm ကို ရွေးချယ်ပါ</h4>
+                <p className="text-muted-foreground">FOB က သယ်ယူခ သက်သာစေသော်လည်း ဝယ်ယူသူအတွက် စွန့်စားမှု များစေသည်။ CIF နှင့် DDP တို့က ဝယ်ယူသူ၏ ယုံကြည်မှုကို ရရှိစေသည်။ သင့်ငွေကြေးစီးဆင်းမှုအပေါ် မူတည်၍ ရွေးချယ်ပါ။</p>
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">2. Consolidate Shipments</h4>
-                <p className="text-muted-foreground">Multiple small shipments are expensive. Consolidate into full container loads (FCL) to reduce per-unit shipping costs.</p>
+                <h4 className="font-semibold text-lg mb-2">၂။ ကုန်ပစ္စည်းများကို စုပေါင်းတင်ပို့ပါ</h4>
+                <p className="text-muted-foreground">အနည်းငယ်စီ ခွဲပို့ခြင်းက ကုန်ကျစရိတ် ပိုများစေသည်။ Container အပြည့် (FCL) တင်ပို့ခြင်းက တစ်ယူနစ်ချင်းစီ၏ သယ်ယူခကို လျှော့ချပေးနိုင်သည်။</p>
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">3. Use Regional Logistics Hubs</h4>
-                <p className="text-muted-foreground">Myanmar's strategic location means you can use regional hubs (Bangkok, Singapore) to optimize routes and reduce delays.</p>
+                <h4 className="font-semibold text-lg mb-2">၃။ ဒေသတွင်း ပို့ဆောင်ရေး ဗဟိုချက်များကို အသုံးပြုပါ</h4>
+                <p className="text-muted-foreground">မြန်မာနိုင်ငံ၏ တည်နေရာအရ ဘန်ကောက်၊ စင်ကာပူကဲ့သို့သော ဗဟိုချက်များကို အသုံးပြု၍ လမ်းကြောင်းများကို အကောင်းဆုံးဖြစ်အောင် လုပ်ဆောင်နိုင်သည်။</p>
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">4. Negotiate with Freight Forwarders</h4>
-                <p className="text-muted-foreground">Volume gives you leverage. Build relationships with freight forwarders—they'll give you better rates and faster service.</p>
+                <h4 className="font-semibold text-lg mb-2">၄။ ပို့ဆောင်ရေးလုပ်ငန်းများနှင့် ညှိနှိုင်းပါ</h4>
+                <p className="text-muted-foreground">ပို့ဆောင်ရမည့် ပမာဏများပါက ဈေးနှုန်းညှိနှိုင်းနိုင်သော အားသာချက် ရှိသည်။ ၎င်းတို့နှင့် ခိုင်မာသော ဆက်ဆံရေး တည်ဆောက်ထားပါက ပိုမိုသက်သာသော နှုန်းထားနှင့် မြန်ဆန်သော ဝန်ဆောင်မှုကို ရရှိပါလိမ့်မည်။</p>
               </div>
             </CardContent>
           </Card>
@@ -162,7 +162,7 @@ export default function TradeMastery() {
         <div className="container">
           <PageNavigation 
             nextHref="/geopolitics" 
-            nextLabel="Geopolitics" 
+            nextLabel="ပထဝီနိုင်ငံရေး" 
           />
         </div>
       </section>

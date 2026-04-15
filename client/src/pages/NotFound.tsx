@@ -21,16 +21,16 @@ export default function NotFound() {
             </div>
           </div>
 
-          <h1 className="text-4xl font-bold text-slate-900 mb-2">404</h1>
+          <h1 className="text-4xl font-bold text-slate-900 mb-2">၄၀၄</h1>
 
           <h2 className="text-xl font-semibold text-slate-700 mb-4">
-            Page Not Found
+            ရှာမတွေ့ပါ
           </h2>
 
           <p className="text-slate-600 mb-8 leading-relaxed">
-            Sorry, the page you are looking for doesn't exist.
+            တောင်းပန်ပါသည်။ သင်ရှာဖွေနေသော စာမျက်နှာ မရှိပါ။
             <br />
-            It may have been moved or deleted.
+            ၎င်းကို ရွှေ့ပြောင်းထားခြင်း သို့မဟုတ် ဖျက်လိုက်ခြင်း ဖြစ်နိုင်ပါသည်။
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
@@ -39,7 +39,7 @@ export default function NotFound() {
               className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-lg transition-all duration-200 shadow-md hover:shadow-lg"
             >
               <Home className="w-4 h-4 mr-2" />
-              Go Home
+              ပင်မစာမျက်နှာသို့
             </Button>
           </div>
         </CardContent>

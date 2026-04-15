@@ -5,18 +5,18 @@ import PageNavigation from "@/components/PageNavigation";
 export default function MarketPulse() {
   const rules = [
     {
-      name: "15/85 Rule",
-      description: "အရောင်းအဝယ်ရှင်ဆီမှ ၁၅% သုံးစွဲရမယ်။ အကျန် ၈၅% အားလုံး ကုန်ပစ္စည်းအတွက် သုံးစွဲရမယ်။ ဒါမှ အခွန်ခွင့်ပြုချက်ရနိုင်ပါတယ်။",
+      name: "၁၅/၈၅ စည်းမျဉ်း",
+      description: "ပို့ကုန်ရငွေ၏ ၁၅% ကို သတ်မှတ်နှုန်းထားဖြင့် လဲလှယ်ရပြီး ကျန် ၈၅% ကို မိမိစိတ်ကြိုက် အသုံးပြုနိုင်သည်။ ဤစည်းမျဉ်းသည် နိုင်ငံခြားငွေ စီးဆင်းမှုအတွက် အလွန်အရေးကြီးသည်။",
       icon: "📊",
     },
     {
-      name: "Local Content Requirement",
-      description: "အချို့ကုန်ပစ္စည်းတွေ သည်ပြည်ဒေသတွင်းမှ ပစ္စည်းများ ပါဝင်ရမယ်။ ဒါမှ အခွန်ခွင့်ပြုချက်ရနိုင်ပါတယ်။",
+      name: "ဒေသတွင်း ပါဝင်မှု လိုအပ်ချက်",
+      description: "အချို့ကုန်ပစ္စည်းများသည် ပြည်တွင်းမှ ထုတ်လုပ်သော ပစ္စည်းများ သတ်မှတ်ရာခိုင်နှုန်း ပါဝင်ရမည်။ ၎င်းသည် ပြည်တွင်းထုတ်လုပ်မှုကို အားပေးရန် ဖြစ်သည်။",
       icon: "🏭",
     },
     {
-      name: "Price Monitoring",
-      description: "အချို့ကုန်ပစ္စည်းတွေ ဈေးကွက်ထိန်းချုပ်ခံရတယ်။ သင်ကြေးမုံရဲ့ အကွာအဝေးထဲမှာ ရှိရမယ်။ ဒါမှ ကောင်းမွန်တဲ့ အဆင့်ပြည့်ဝတဲ့ ကုန်သွယ်မှုပဲ ဖြစ်ပါတယ်။",
+      name: "ဈေးနှုန်းစောင့်ကြည့်ခြင်း",
+      description: "အရေးကြီးကုန်စည်များ၏ ဈေးနှုန်းကို အစိုးရမှ စောင့်ကြည့်ထိန်းချုပ်လေ့ရှိသည်။ သတ်မှတ်ထားသော ဈေးနှုန်းဘောင်အတွင်း ရောင်းဝယ်ရန် လိုအပ်သည်။",
       icon: "💰",
     },
   ];
@@ -24,18 +24,18 @@ export default function MarketPulse() {
   const taxation = [
     {
       type: "အကောက်ခွန် (Tariff)",
-      rate: "0% - 40%",
-      description: "ကုန်ပစ္စည်းအမျိုးအစားပေါ်မှာ မူတည်တယ်။ အချို့ကုန်ပစ္စည်းတွေ အခွန်ခွင့်ပြုချက်ရှိတယ်။",
+      rate: "၀% - ၄၀%",
+      description: "ကုန်ပစ္စည်းအမျိုးအစားပေါ်တွင် မူတည်သည်။ အချို့ကုန်ပစ္စည်းများသည် အခွန်ကင်းလွတ်ခွင့် သို့မဟုတ် သက်သာခွင့်များ ရရှိနိုင်သည်။",
     },
     {
-      type: "အခြားခွန်ခြင်း (Other Taxes)",
-      rate: "Variable",
-      description: "အရောင်းအဝယ်ခွန်၊ အသုံးခွန်နှင့် အခြား ခွန်ခြင်းများ ရှိနိုင်ပါတယ်။",
+      type: "ကုန်သွယ်လုပ်ငန်းခွန်",
+      rate: "ပြောင်းလဲနိုင်သည်",
+      description: "အရောင်းအဝယ်အပေါ်တွင် ကောက်ခံသော အခွန်ဖြစ်သည်။ ကုန်စည်အမျိုးအစားအလိုက် နှုန်းထားများ ကွဲပြားနိုင်သည်။",
     },
     {
-      type: "အထူးခွန် (Special Duty)",
-      rate: "0% - 100%",
-      description: "အချို့ကုန်ပစ္စည်းတွေ အထူးခွန်ခံရတယ်။ ဒါဟာ ကုန်သွယ်မှုကို ကာကွယ်ရန် အတွက်ပါပဲ။",
+      type: "အထူးကုန်စည်ခွန်",
+      rate: "၀% - ၁၀၀%",
+      description: "ဇိမ်ခံပစ္စည်းများ သို့မဟုတ် ထိန်းချုပ်ကုန်စည်များအပေါ်တွင် မြင့်မားသော အခွန်နှုန်းထားများဖြင့် ကောက်ခံခြင်းဖြစ်သည်။",
     },
   ];
 
@@ -45,10 +45,10 @@ export default function MarketPulse() {
       <section className="section-padding border-b border-border">
         <div className="container">
           <div className="max-w-3xl space-y-4">
-            <h1 className="text-5xl md:text-6xl font-bold neon-glow">Market Pulse</h1>
-            <p className="text-xl text-muted-foreground">Real-World Trade Dynamics - ကုန်သွယ်မှုဈေးကွက်၏ အမှန်တကယ်အနေအထားများ</p>
+            <h1 className="text-5xl md:text-6xl font-bold neon-glow">ဈေးကွက်စီးဆင်းမှု</h1>
+            <p className="text-xl text-muted-foreground">လက်တွေ့ကမ္ဘာမှ ကုန်သွယ်မှု အပြောင်းအလဲများ</p>
             <p className="text-lg text-foreground leading-relaxed">
-              Myanmar's trade market isn't random. It operates on rules: the 15/85 rule, local content requirements, and price monitoring. Understand these, and you'll predict market movements before they happen.
+              မြန်မာ့ကုန်သွယ်မှုဈေးကွက်သည် စနစ်တကျ လည်ပတ်နေခြင်း ဖြစ်သည်။ ၁၅/၈၅ စည်းမျဉ်း၊ ဒေသတွင်းပါဝင်မှု လိုအပ်ချက်နှင့် ဈေးနှုန်းစောင့်ကြည့်မှုများကဲ့သို့သော စည်းမျဉ်းများကို နားလည်ထားခြင်းဖြင့် ဈေးကွက်အပြောင်းအလဲများကို ကြိုတင်ခန့်မှန်းနိုင်ပါလိမ့်မည်။
             </p>
           </div>
         </div>
@@ -59,8 +59,8 @@ export default function MarketPulse() {
         <div className="container">
           <div className="space-y-12">
             <div>
-              <h2 className="text-4xl font-bold mb-2">Market Rules</h2>
-              <p className="text-lg text-muted-foreground">The invisible hand that guides Myanmar's trade</p>
+              <h2 className="text-4xl font-bold mb-2">ဈေးကွက်စည်းမျဉ်းများ</h2>
+              <p className="text-lg text-muted-foreground">မြန်မာ့ကုန်သွယ်ရေးကို လမ်းညွှန်နေသော မမြင်ရသည့် လက်များ</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -87,8 +87,8 @@ export default function MarketPulse() {
         <div className="container">
           <div className="space-y-12">
             <div>
-              <h2 className="text-4xl font-bold mb-2">Taxation Structure</h2>
-              <p className="text-lg text-muted-foreground">How Myanmar calculates import duties</p>
+              <h2 className="text-4xl font-bold mb-2">အခွန်ကောက်ခံမှု ပုံစံ</h2>
+              <p className="text-lg text-muted-foreground">မြန်မာနိုင်ငံ၏ သွင်းကုန်အကောက်ခွန် တွက်ချက်ပုံ</p>
             </div>
 
             <div className="space-y-4">
@@ -120,21 +120,21 @@ export default function MarketPulse() {
             <CardHeader>
               <CardTitle className="text-3xl flex items-center gap-3">
                 <TrendingUp className="w-8 h-8 text-primary" />
-                2026-2027 Market Trends
+                ၂၀၂၆-၂၀၂၇ ဈေးကွက်လမ်းကြောင်းများ
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h4 className="font-semibold text-lg mb-2">Lab-Grown Meat (LGM)</h4>
-                <p className="text-muted-foreground">Cell-based meat is entering Myanmar's market as a luxury product. Expect tariff classifications to evolve. Early movers will capture market share.</p>
+                <h4 className="font-semibold text-lg mb-2">ဓာတ်ခွဲခန်းထုတ် အသား (Lab-Grown Meat)</h4>
+                <p className="text-muted-foreground">Cell-based meat များသည် မြန်မာ့ဈေးကွက်သို့ ဇိမ်ခံပစ္စည်းအဖြစ် ဝင်ရောက်လာနေသည်။ အကောက်ခွန် အမျိုးအစားခွဲခြားမှုများ ပြောင်းလဲလာမည်ဟု မျှော်လင့်ရသည်။ စောစီးစွာ စတင်သူများက ဈေးကွက်ဝေစုကို ရရှိပါလိမ့်မည်။</p>
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">EV Components (0% Tariff until March 2026)</h4>
-                <p className="text-muted-foreground">Electric vehicle components enjoy zero tariff until March 2026. After that, expect tariffs to increase. The window is closing—act now if you're in this space.</p>
+                <h4 className="font-semibold text-lg mb-2">EV အပိုပစ္စည်းများ (၂၀၂၆ မတ်လအထိ အကောက်ခွန် ၀%)</h4>
+                <p className="text-muted-foreground">လျှပ်စစ်ကား အပိုပစ္စည်းများသည် ၂၀၂၆ မတ်လအထိ အကောက်ခွန် ကင်းလွတ်ခွင့် ရရှိထားသည်။ ထို့နောက်ပိုင်းတွင် အခွန်နှုန်းထားများ တိုးလာနိုင်သဖြင့် ယခုအချိန်သည် အကောင်းဆုံး အခွင့်အရေး ဖြစ်သည်။</p>
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">Digital Trade Integration</h4>
-                <p className="text-muted-foreground">Trade Net 2.0 is moving faster. Automated clearance is coming. Traders who digitize now will have a competitive advantage.</p>
+                <h4 className="font-semibold text-lg mb-2">ဒီဂျစ်တယ်ကုန်သွယ်မှု ပေါင်းစည်းခြင်း</h4>
+                <p className="text-muted-foreground">Trade Net 2.0 သည် ပိုမိုမြန်ဆန်လာပြီး အလိုအလျောက် ရှင်းလင်းရေးစနစ်များ လာတော့မည်ဖြစ်သည်။ ယခုကတည်းက ဒီဂျစ်တယ်စနစ်သို့ ပြောင်းလဲထားသော ကုန်သည်များသည် အသာစီးရပါလိမ့်မည်။</p>
               </div>
             </CardContent>
           </Card>
@@ -146,7 +146,7 @@ export default function MarketPulse() {
         <div className="container">
           <PageNavigation 
             nextHref="/trade-mastery" 
-            nextLabel="Trade Mastery" 
+            nextLabel="ကုန်သွယ်မှုကျွမ်းကျင်မှု" 
           />
         </div>
       </section>

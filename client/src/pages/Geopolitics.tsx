@@ -6,39 +6,39 @@ export default function Geopolitics() {
   const corridors = [
     {
       name: "BRI - Belt & Road Initiative",
-      description: "တရုတ်ရဲ့ အဆင့်မြင့်တဲ့ အမြတ်အစွန်းရှာ ကုန်သွယ်မှုစီမံချက်။ Myanmar သည် အခြေခံအုတ်မြစ်ပဲ ဖြစ်ပါတယ်။ Yunnan မှ Yangon အထိ။ ဒါဟာ အနာဂတ်ပါပဲ။",
+      description: "တရုတ်နိုင်ငံ၏ အဆင့်မြင့်မားသော ကမ္ဘာလုံးဆိုင်ရာ ကုန်သွယ်မှုစီမံကိန်းဖြစ်သည်။ မြန်မာနိုင်ငံသည် ၎င်း၏ အဓိကအခြေခံအုတ်မြစ်တစ်ခုဖြစ်ပြီး ယူနန်မှ ရန်ကုန်အထိ ဆက်သွယ်ထားသည်။ ၎င်းသည် အနာဂတ်၏ အခွင့်အလမ်းတစ်ခုဖြစ်သည်။",
       icon: "🌏",
     },
     {
-      name: "ASEAN Trade Corridor",
-      description: "အဆိုပါ ကုန်သွယ်မှုစီမံချက်သည် ASEAN အတွင်း ကုန်သွယ်မှုကို အဆင့်မြင့်စေပါတယ်။ Myanmar သည် အဓိကအခန်းကဏ္ဍ ပါဝင်ပါတယ်။",
+      name: "ASEAN ကုန်သွယ်မှုလမ်းကြောင်း",
+      description: "အာဆီယံဒေသတွင်း ကုန်သွယ်မှုကို ပိုမိုကောင်းမွန်စေမည့် စီမံချက်ဖြစ်သည်။ မြန်မာနိုင်ငံသည် အာဆီယံ၏ အချက်အချာကျသော နေရာတွင် တည်ရှိနေသည်။",
       icon: "🤝",
     },
     {
-      name: "South Asian Trade Gateway",
-      description: "အိန္ဒိယ၊ ဘင်္ဂလားဒေ့ရှ်နှင့် အခြား တောင်အာရှ နိုင်ငံများ ကုန်သွယ်မှုအတွက် Myanmar သည် တံခါးပါပဲ ဖြစ်ပါတယ်။",
+      name: "တောင်အာရှ ကုန်သွယ်မှုတံခါးပေါက်",
+      description: "အိန္ဒိယ၊ ဘင်္ဂလားဒေ့ရှ်နှင့် အခြားတောင်အာရှနိုင်ငံများနှင့် ကုန်သွယ်မှုပြုရန် မြန်မာနိုင်ငံသည် အဓိကတံခါးပေါက်တစ်ခု ဖြစ်သည်။",
       icon: "🌐",
     },
   ];
 
   const tradegates = [
     {
-      gate: "Muse-Ruili (China Border)",
-      volume: "High",
-      goods: "ကုန်ပစ္စည်းများ၊ အစားအစာ၊ စက်ပွဲများ",
-      strategy: "တရုတ်ဆီသို့ တင်ပို့ခြင်းအတွက် အကောင်းဆုံးမြေပြင်လမ်းပါပဲ။",
+      gate: "မူဆယ်-ရွှေလီ (တရုတ်နယ်စပ်)",
+      volume: "မြင့်မားသည်",
+      goods: "လူသုံးကုန်ပစ္စည်းများ၊ အစားအစာ၊ စက်ပစ္စည်းများ",
+      strategy: "တရုတ်နိုင်ငံသို့ ကုန်ပစ္စည်းတင်ပို့ရန်အတွက် အကောင်းဆုံး ကုန်းလမ်းကြောင်းဖြစ်သည်။",
     },
     {
-      gate: "Mae Sot-Myawady (Thailand Border)",
-      volume: "Very High",
-      goods: "ကုန်ပစ္စည်းများ၊ အသုံးအဆောင်များ၊ စက်ပွဲများ",
-      strategy: "အများဆုံးကုန်သွယ်မှုလမ်းပါပဲ။ ထိုင်းဘက်သို့ တင်ပို့ခြင်းအတွက် အကောင်းဆုံးပါပဲ။",
+      gate: "မြဝတီ-မဲဆောက် (ထိုင်းနယ်စပ်)",
+      volume: "အလွန်မြင့်မားသည်",
+      goods: "လူသုံးကုန်ပစ္စည်းများ၊ အသုံးအဆောင်များ၊ စက်ပစ္စည်းများ",
+      strategy: "မြန်မာနိုင်ငံ၏ အကြီးမားဆုံးသော နယ်စပ်ကုန်သွယ်မှုလမ်းကြောင်း ဖြစ်သည်။",
     },
     {
-      gate: "Yangon Port",
-      volume: "Highest",
-      goods: "အားလုံးကုန်ပစ္စည်းများ",
-      strategy: "နိုင်ငံတကာကုန်သွယ်မှုအတွက် အဓိကတံခါးပါပဲ။ အများဆုံးကုန်သွယ်မှုအတွက် အကောင်းဆုံးပါပဲ။",
+      gate: "ရန်ကုန်ဆိပ်ကမ်း",
+      volume: "အမြင့်မားဆုံး",
+      goods: "ကုန်ပစ္စည်းအမျိုးမျိုး",
+      strategy: "နိုင်ငံတကာ ပင်လယ်ရေကြောင်းကုန်သွယ်မှုအတွက် အဓိကတံခါးပေါက် ဖြစ်သည်။",
     },
   ];
 
@@ -48,10 +48,10 @@ export default function Geopolitics() {
       <section className="section-padding border-b border-border">
         <div className="container">
           <div className="max-w-3xl space-y-4">
-            <h1 className="text-5xl md:text-6xl font-bold neon-glow">Geopolitics</h1>
-            <p className="text-xl text-muted-foreground">Strategic Trade Corridors - အမြတ်အစွန်းရှာ ကုန်သွယ်မှုလမ်းများ</p>
+            <h1 className="text-5xl md:text-6xl font-bold neon-glow">ပထဝီနိုင်ငံရေး</h1>
+            <p className="text-xl text-muted-foreground">မဟာဗျူဟာမြောက် ကုန်သွယ်မှုလမ်းကြောင်းများ</p>
             <p className="text-lg text-foreground leading-relaxed">
-              Myanmar sits at the intersection of three major trade corridors: the Belt & Road Initiative, ASEAN integration, and South Asian connectivity. Understanding geopolitics means understanding where the money flows.
+              မြန်မာနိုင်ငံသည် BRI၊ အာဆီယံ ပေါင်းစည်းမှုနှင့် တောင်အာရှ ဆက်သွယ်မှုဟူသော အဓိကကုန်သွယ်မှုလမ်းကြောင်း သုံးခု၏ ဆုံချက်တွင် တည်ရှိသည်။ ပထဝီနိုင်ငံရေးကို နားလည်ခြင်းသည် ငွေကြေးစီးဆင်းမှု မည်သည့်နေရာတွင် ရှိသည်ကို သိရှိခြင်းပင် ဖြစ်သည်။
             </p>
           </div>
         </div>
@@ -62,8 +62,8 @@ export default function Geopolitics() {
         <div className="container">
           <div className="space-y-12">
             <div>
-              <h2 className="text-4xl font-bold mb-2">Major Trade Corridors</h2>
-              <p className="text-lg text-muted-foreground">Where Myanmar fits in the global trade map</p>
+              <h2 className="text-4xl font-bold mb-2">အဓိက ကုန်သွယ်မှုလမ်းကြောင်းများ</h2>
+              <p className="text-lg text-muted-foreground">ကမ္ဘာ့ကုန်သွယ်မှုမြေပုံတွင် မြန်မာနိုင်ငံ၏ အခန်းကဏ္ဍ</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -90,8 +90,8 @@ export default function Geopolitics() {
         <div className="container">
           <div className="space-y-12">
             <div>
-              <h2 className="text-4xl font-bold mb-2">Strategic Trade Gates</h2>
-              <p className="text-lg text-muted-foreground">Where goods enter and exit Myanmar</p>
+              <h2 className="text-4xl font-bold mb-2">မဟာဗျူဟာမြောက် ကုန်သွယ်မှုတံခါးပေါက်များ</h2>
+              <p className="text-lg text-muted-foreground">မြန်မာနိုင်ငံ၏ အဓိက အဝင်အထွက်နေရာများ</p>
             </div>
 
             <div className="space-y-4">
@@ -103,7 +103,7 @@ export default function Geopolitics() {
                         <CardTitle className="text-xl">{gate.gate}</CardTitle>
                         <CardDescription className="text-base mt-2">
                           <span className="inline-block px-3 py-1 rounded-full bg-primary/20 text-primary text-sm font-semibold">
-                            Volume: {gate.volume}
+                            ပမာဏ: {gate.volume}
                           </span>
                         </CardDescription>
                       </div>
@@ -111,11 +111,11 @@ export default function Geopolitics() {
                   </CardHeader>
                   <CardContent className="space-y-3">
                     <div>
-                      <h4 className="font-semibold text-sm text-muted-foreground mb-1">Primary Goods</h4>
+                      <h4 className="font-semibold text-sm text-muted-foreground mb-1">အဓိကကုန်စည်များ</h4>
                       <p className="text-foreground">{gate.goods}</p>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-sm text-muted-foreground mb-1">Strategy</h4>
+                      <h4 className="font-semibold text-sm text-muted-foreground mb-1">မဟာဗျူဟာ</h4>
                       <p className="text-foreground">{gate.strategy}</p>
                     </div>
                   </CardContent>
@@ -133,25 +133,25 @@ export default function Geopolitics() {
             <CardHeader>
               <CardTitle className="text-3xl flex items-center gap-3">
                 <AlertCircle className="w-8 h-8 text-destructive" />
-                Geopolitical Risks & Opportunities
+                ပထဝီနိုင်ငံရေးဆိုင်ရာ စိန်ခေါ်မှုများနှင့် အခွင့်အလမ်းများ
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               <div>
-                <h4 className="font-semibold text-lg mb-2">US-China Trade Tensions</h4>
-                <p className="text-muted-foreground">Myanmar's neutrality makes it an attractive alternative for companies diversifying away from China. Opportunity: position yourself as a regional hub.</p>
+                <h4 className="font-semibold text-lg mb-2">အမေရိကန်-တရုတ် ကုန်သွယ်ရေး တင်းမာမှု</h4>
+                <p className="text-muted-foreground">မြန်မာနိုင်ငံ၏ ကြားနေမှုသည် တရုတ်နိုင်ငံမှတစ်ဆင့် ကုန်သွယ်မှုခွဲဖြတ်လိုသော ကုမ္ပဏီများအတွက် ဆွဲဆောင်မှုရှိစေသည်။ အခွင့်အလမ်းမှာ ဒေသတွင်း အချက်အချာနေရာတစ်ခုအဖြစ် ရပ်တည်ရန်ဖြစ်သည်။</p>
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">ASEAN Integration</h4>
-                <p className="text-muted-foreground">ASEAN is moving toward deeper integration. Myanmar's participation in ASEAN trade agreements means preferential access to regional markets.</p>
+                <h4 className="font-semibold text-lg mb-2">အာဆီယံ ပေါင်းစည်းမှု</h4>
+                <p className="text-muted-foreground">အာဆီယံသည် ပိုမိုနက်ရှိုင်းသော ပေါင်းစည်းမှုဆီသို့ ဦးတည်နေသည်။ မြန်မာနိုင်ငံ၏ အာဆီယံကုန်သွယ်ရေး သဘောတူညီချက်များတွင် ပါဝင်မှုသည် ဒေသတွင်းဈေးကွက်များသို့ အထူးအခွင့်အရေးများဖြင့် ဝင်ရောက်နိုင်ခြင်းကို ဆိုလိုသည်။</p>
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">Belt & Road Expansion</h4>
-                <p className="text-muted-foreground">China's BRI is accelerating infrastructure development. This means better logistics, faster clearance, and more trade volume. Position yourself early.</p>
+                <h4 className="font-semibold text-lg mb-2">BRI စီမံကိန်း တိုးချဲ့မှု</h4>
+                <p className="text-muted-foreground">တရုတ်နိုင်ငံ၏ BRI သည် အခြေခံအဆောက်အအုံ ဖွံ့ဖြိုးတိုးတက်မှုကို အရှိန်မြှင့်နေသည်။ ၎င်းသည် ပိုမိုကောင်းမွန်သော ပို့ဆောင်ရေး၊ ပိုမိုမြန်ဆန်သော ရှင်းလင်းရေးနှင့် ပိုမိုများပြားသော ကုန်သွယ်မှုပမာဏကို ဆိုလိုသည်။ စောစီးစွာ နေရာယူထားပါ။</p>
               </div>
               <div>
-                <h4 className="font-semibold text-lg mb-2">Regional Stability</h4>
-                <p className="text-muted-foreground">Political stability in Myanmar is crucial for trade. Monitor developments—they directly impact trade corridors and tariff policies.</p>
+                <h4 className="font-semibold text-lg mb-2">ဒေသတွင်း တည်ငြိမ်မှု</h4>
+                <p className="text-muted-foreground">မြန်မာနိုင်ငံ၏ နိုင်ငံရေးတည်ငြိမ်မှုသည် ကုန်သွယ်မှုအတွက် အလွန်အရေးကြီးသည်။ ဖြစ်ပေါ်တိုးတက်မှုများကို စောင့်ကြည့်ပါ—၎င်းတို့သည် ကုန်သွယ်မှုလမ်းကြောင်းများနှင့် အခွန်မူဝါဒများအပေါ် တိုက်ရိုက်သက်ရောက်မှု ရှိသည်။</p>
               </div>
             </CardContent>
           </Card>
@@ -163,7 +163,7 @@ export default function Geopolitics() {
         <div className="container">
           <PageNavigation 
             nextHref="/sample-projects" 
-            nextLabel="Sample Projects" 
+            nextLabel="နမူနာစီမံကိန်းများ" 
           />
         </div>
       </section>

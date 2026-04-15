@@ -24,7 +24,7 @@ export default function ThePillars() {
         icon: "💳",
       },
       {
-        name: "License & FDA/C.O",
+        name: "လိုင်စင်နှင့် FDA/C.O",
         description: "ခွင့်ပြုချက်လက်မှတ်။ စည်းမျဉ်းစည်းကမ်းတွေကို လိုက်နာမှု။ ဒါမရှိရင် သင့်ကုန်ပစ္စည်းတွေဟာ တစ်လက်မတောင် မရွေ့နိုင်ပါဘူး။ ဒါအမှန်တရားပဲ။",
         icon: "🔐",
       },
@@ -65,8 +65,8 @@ export default function ThePillars() {
       <section className="section-padding border-b border-border">
         <div className="container">
           <div className="max-w-3xl space-y-4">
-            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold neon-glow">The Pillars</h1>
-            <p className="text-lg sm:text-xl text-muted-foreground">အဓိကမဏ္ဍိုင်များ - နိုင်ငံတကာကုန်သွယ်ရေး၏ အခြေခံအုတ်မြစ်</p>
+            <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold neon-glow">အဓိကမဏ္ဍိုင်များ</h1>
+            <p className="text-lg sm:text-xl text-muted-foreground">နိုင်ငံတကာကုန်သွယ်ရေး၏ အခြေခံအုတ်မြစ်</p>
             <p className="text-base sm:text-lg text-foreground leading-relaxed">
               ကုန်သွယ်မှုခရီးစဉ်တိုင်းဟာ မဏ္ဍိုင်နှစ်ခုပေါ်မှာ တည်မှီနေပါတယ်။ အဲဒါတွေကတော့ စာရွက်စာတမ်းပိုင်းနဲ့ လက်တွေ့လုပ်ငန်းစဉ်ပိုင်းတို့ပဲ ဖြစ်ပါတယ်။ ဒီနှစ်ခုလုံးကို ကျွမ်းကျင်ရင် သင်ဟာ ဒီဂိမ်းရဲ့ အရှင်သခန်ဖြစ်လာပါလိမ့်မယ်။
             </p>
@@ -158,14 +158,14 @@ export default function ThePillars() {
         <div className="container">
           <Card className="border-primary/50 neon-border">
             <CardHeader>
-              <CardTitle className="text-2xl sm:text-3xl">The Integration</CardTitle>
+              <CardTitle className="text-2xl sm:text-3xl">ပေါင်းစပ်လုပ်ဆောင်ခြင်း</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-base sm:text-lg leading-relaxed">
-                Documentation and Operations aren't separate. They're intertwined. Your documentation proves your operations. Your operations validate your documentation. Master both, and you master trade.
+                စာရွက်စာတမ်းပိုင်းနှင့် လက်တွေ့လုပ်ငန်းစဉ်ပိုင်းတို့သည် သီးခြားစီမဟုတ်ဘဲ အပြန်အလှန်ဆက်နွှယ်နေပါသည်။ သင့်စာရွက်စာတမ်းများက သင့်လုပ်ငန်းစဉ်ကို သက်သေပြပြီး သင့်လုပ်ငန်းစဉ်များက သင့်စာရွက်စာတမ်းများကို အတည်ပြုပေးပါသည်။ ဤနှစ်ခုလုံးကို ကျွမ်းကျင်ပါက ကုန်သွယ်မှုနယ်ပယ်ကို သင်ကျွမ်းကျင်ပါလိမ့်မည်။
               </p>
               <p className="text-muted-foreground leading-relaxed">
-                The traders who understand this connection move faster, face fewer delays, and build stronger relationships with customs, banks, and buyers. They're not just moving goods—they're building systems.
+                ဤဆက်နွှယ်မှုကို နားလည်သော ကုန်သည်များသည် ပိုမိုမြန်ဆန်စွာ လုပ်ဆောင်နိုင်ပြီး အကောက်ခွန်၊ ဘဏ်များနှင့် ဝယ်ယူသူများကြားတွင် ခိုင်မာသော ယုံကြည်မှုကို တည်ဆောက်နိုင်ပါသည်။ ၎င်းတို့သည် ကုန်စည်များကိုသာ ရွှေ့ပြောင်းနေခြင်းမဟုတ်ဘဲ စနစ်တစ်ခုကို တည်ဆောက်နေခြင်း ဖြစ်သည်။
               </p>
             </CardContent>
           </Card>
@@ -177,7 +177,7 @@ export default function ThePillars() {
         <div className="container">
           <PageNavigation 
             nextHref="/compliance" 
-            nextLabel="Compliance Hub" 
+            nextLabel="စည်းမျဉ်းလိုက်နာမှုဗဟို" 
           />
         </div>
       </section>
