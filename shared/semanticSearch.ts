@@ -112,10 +112,17 @@ function createSupabaseClient() {
 }
 
 async function createQueryEmbedding(query: string, apiKey?: string): Promise<number[]> {
-  // Use provided apiKey, or fall back to the hardcoded one if the environment variable is also missing
-  const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY || "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";
+  const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
+  const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
   
-  const openaiInstance = createOpenAI({ apiKey: effectiveApiKey });
+  if (!effectiveApiKey) {
+    throw new Error("Missing OPENAI_API_KEY for semantic search.");
+  }
+
+  const openaiInstance = createOpenAI({ 
+    apiKey: effectiveApiKey,
+    baseURL: baseURL
+  });
 
   const { embedding } = await embed({
     model: openaiInstance.embedding("text-embedding-3-small"),
@@ -168,9 +175,44 @@ export async function semanticSearchDocuments(
   }
 
   const limit = normalizeLimit(options?.limit);
-  const embedding = await createQueryEmbedding(trimmedQuery, options?.apiKey);
+  const threshold = Number(process.env.SEMANTIC_SEARCH_THRESHOLD ?? DEFAULT_THRESHOLD);
   const supabase = createSupabaseClient();
+  
+  let embedding: number[];
+  try {
+    embedding = await createQueryEmbedding(trimmedQuery, options?.apiKey);
+  } catch (error) {
+    console.warn("Embedding failed, falling back to lexical search:", error);
+    const fallbackResults = await fetchLexicalFallback(trimmedQuery, limit);
+    return {
+      results: fallbackResults,
+      message: "Semantic search unavailable. Showing keyword matches instead.",
+    };
+  }
 
+  // Attempt to use Supabase RPC for vector search (much more efficient)
+  const { data: rpcData, error: rpcError } = await supabase.rpc('match_documents', {
+    query_embedding: embedding,
+    match_threshold: threshold,
+    match_count: limit
+  });
+
+  if (!rpcError && rpcData) {
+    const results = (rpcData as any[]).map(row => ({
+      id: row.id,
+      title: row.title,
+      content: toContentPreview(row.content || ""),
+      metadata: row.metadata,
+      score: Number(row.similarity.toFixed(4)),
+    }));
+
+    if (results.length > 0) {
+      return { results };
+    }
+  }
+
+  // Fallback to manual similarity calculation if RPC fails or returns no results
+  console.log("RPC search failed or returned no results, falling back to manual scan.");
   const { data, error } = await supabase
     .from("documents")
     .select("id, title, content, metadata, embedding")
@@ -179,8 +221,6 @@ export async function semanticSearchDocuments(
   if (error) {
     throw new Error(`Supabase documents lookup failed: ${error.message}`);
   }
-
-  const threshold = Number(process.env.SEMANTIC_SEARCH_THRESHOLD ?? DEFAULT_THRESHOLD);
 
   const scoredResults = ((data ?? []) as DocumentsRow[])
     .map((row) => {
@@ -212,11 +252,12 @@ export async function semanticSearchDocuments(
     return { results: scoredResults };
   }
 
+  // Final fallback to lexical search
   const fallbackResults = await fetchLexicalFallback(trimmedQuery, limit);
   if (fallbackResults.length > 0) {
     return {
       results: fallbackResults,
-      message: "No strong semantic matches found. Showing keyword matches instead.",
+      message: "Showing keyword matches.",
     };
   }
 
