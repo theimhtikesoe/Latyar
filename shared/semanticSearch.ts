@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 const DEFAULT_LIMIT = 5;
 const MAX_LIMIT = 20;
 const FETCH_LIMIT = 200;
-const DEFAULT_THRESHOLD = 0.2;
+const DEFAULT_THRESHOLD = 0.1; // Lowered threshold for better recall in semantic search
 
 const SUPABASE_URL = "https://kwlyitkkhnlhqxyojciu.supabase.co";
 const SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3bHlpdGtraG5saHF4eW9qY2l1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjI2NzkwMiwiZXhwIjoyMDkxODQzOTAyfQ.7DQvqJyRkBszeX_wMv9eENxlmMAuLe1iey9_ARtmoLk";
@@ -198,21 +198,46 @@ export async function semanticSearchDocuments(
   const { data: rpcData, error: rpcError } = await supabase.rpc('match_documents', {
     query_embedding: embedding,
     match_threshold: threshold,
-    match_count: limit
+    match_count: limit * 2 // Fetch more to allow for better filtering/ranking
   });
 
+  let semanticResults: SemanticSearchResult[] = [];
   if (!rpcError && rpcData) {
-    const results = (rpcData as any[]).map(row => ({
+    semanticResults = (rpcData as any[]).map(row => ({
       id: row.id,
       title: row.title,
       content: toContentPreview(row.content || ""),
       metadata: row.metadata,
       score: Number(row.similarity.toFixed(4)),
     }));
+  }
 
-    if (results.length > 0) {
-      return { results };
+  // Fetch lexical results for hybrid search
+  const lexicalResults = await fetchLexicalFallback(trimmedQuery, limit);
+  
+  // Combine and deduplicate results
+  const combinedMap = new Map<string, SemanticSearchResult>();
+  
+  // Add semantic results first (they have scores)
+  semanticResults.forEach(res => combinedMap.set(res.id, res));
+  
+  // Add lexical results (if not already present, give them a base score)
+  lexicalResults.forEach(res => {
+    if (!combinedMap.has(res.id)) {
+      combinedMap.set(res.id, { ...res, score: 0.05 }); // Base score for keyword match
+    } else {
+      // If already present, boost the score slightly for being a hybrid match
+      const existing = combinedMap.get(res.id)!;
+      combinedMap.set(res.id, { ...existing, score: Math.min(1, existing.score + 0.1) });
     }
+  });
+
+  const finalResults = Array.from(combinedMap.values())
+    .sort((a, b) => b.score - a.score)
+    .slice(0, limit);
+
+  if (finalResults.length > 0) {
+    return { results: finalResults };
   }
 
   // Fallback to manual similarity calculation if RPC fails or returns no results
