@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useState, useEffect, type FormEvent, useCallback } from "react";
 import { Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -26,6 +26,61 @@ export default function SemanticSearch() {
   const { language } = useLanguage();
   const isMyanmar = language === "my";
 
+  const handleSearchAction = useCallback(async (searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setResults([]);
+      setMessage(null);
+      return;
+    }
+
+    setIsLoading(true);
+    setMessage(null);
+
+    try {
+      const response = await fetch("/api/search", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          query: searchQuery.trim(),
+          limit: 5,
+        }),
+      });
+
+      const contentType = response.headers.get("content-type") ?? "";
+      if (!contentType.includes("application/json")) {
+        setResults([]);
+        setMessage(isMyanmar ? `Search API error (${response.status})` : `Search API error (${response.status})`);
+        return;
+      }
+
+      const payload = (await response.json()) as SearchResponse;
+      setResults(payload.results ?? []);
+
+      if (!response.ok) {
+        setMessage(payload.message ?? (isMyanmar ? `Search API error (${response.status})` : `Search API error (${response.status})`));
+        return;
+      }
+
+      setMessage(payload.message ?? null);
+    } catch {
+      setResults([]);
+      setMessage(isMyanmar
+        ? "Search service ကို ချိတ်ဆက်မရပါ။ API configuration ကို စစ်ဆေးပါ။"
+        : "Could not connect to the search service. Please check API configuration.");
+    } finally {
+      setIsLoading(false);
+    }
+  }, [isMyanmar]);
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const q = params.get("q");
+    if (q) {
+      setQuery(q);
+      handleSearchAction(q);
+    }
+  }, [handleSearchAction]);
+
   const copy = {
     placeholder: isMyanmar
       ? "ဥပမာ - ဓာတုပစ္စည်းတင်သွင်းမှု HS code"
@@ -48,48 +103,19 @@ export default function SemanticSearch() {
 
   async function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-
+    
     if (!query.trim()) {
       setResults([]);
       setMessage(copy.emptyQuery);
       return;
     }
 
-    setIsLoading(true);
-    setMessage(null);
+    // Update URL without reloading
+    const url = new URL(window.location.href);
+    url.searchParams.set("q", query.trim());
+    window.history.pushState({}, "", url);
 
-    try {
-      const response = await fetch("/api/search", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          query: query.trim(),
-          limit: 5,
-        }),
-      });
-
-      const contentType = response.headers.get("content-type") ?? "";
-      if (!contentType.includes("application/json")) {
-        setResults([]);
-        setMessage(copy.apiError(response.status));
-        return;
-      }
-
-      const payload = (await response.json()) as SearchResponse;
-      setResults(payload.results ?? []);
-
-      if (!response.ok) {
-        setMessage(payload.message ?? copy.apiError(response.status));
-        return;
-      }
-
-      setMessage(payload.message ?? null);
-    } catch {
-      setResults([]);
-      setMessage(copy.connectError);
-    } finally {
-      setIsLoading(false);
-    }
+    await handleSearchAction(query);
   }
 
   return (
