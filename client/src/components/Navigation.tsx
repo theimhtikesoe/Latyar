@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
-import { 
-  ChevronLeft, 
-  ArrowUp, 
-  Home, 
-  ChevronDown, 
-  BookOpen, 
-  Briefcase, 
-  TrendingUp, 
-  Zap, 
-  Globe, 
+import {
+  ChevronLeft,
+  ArrowUp,
+  Home,
+  ChevronDown,
+  BookOpen,
+  Briefcase,
+  TrendingUp,
+  Zap,
+  Globe,
   Map,
   Menu,
-  X
+  X,
+  Languages,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,20 +23,54 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
+import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Navigation() {
   const [location, setLocation] = useLocation();
   const [showScrollTop, setShowScrollTop] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { language, setLanguage } = useLanguage();
+
+  const isMyanmar = language === "my";
 
   const modules = [
-    { id: "pillars", icon: BookOpen, label: "အဓိကမဏ္ဍိုင်များ", href: "/pillars" },
-    { id: "compliance", icon: Briefcase, label: "စည်းမျဉ်းလိုက်နာမှုဗဟို", href: "/compliance" },
-    { id: "market-pulse", icon: TrendingUp, label: "ဈေးကွက်စီးဆင်းမှု", href: "/market-pulse" },
-    { id: "trade-mastery", icon: Zap, label: "ကုန်သွယ်မှုကျွမ်းကျင်မှု", href: "/trade-mastery" },
-    { id: "geopolitics", icon: Globe, label: "ပထဝီနိုင်ငံရေး", href: "/geopolitics" },
-    { id: "sample-projects", icon: Map, label: "နမူနာစီမံကိန်းများ", href: "/sample-projects" },
+    {
+      id: "pillars",
+      icon: BookOpen,
+      label: isMyanmar ? "အဓိကမဏ္ဍိုင်များ" : "Core Pillars",
+      href: "/pillars",
+    },
+    {
+      id: "compliance",
+      icon: Briefcase,
+      label: isMyanmar ? "စည်းမျဉ်းလိုက်နာမှုဗဟို" : "Compliance Hub",
+      href: "/compliance",
+    },
+    {
+      id: "market-pulse",
+      icon: TrendingUp,
+      label: isMyanmar ? "ဈေးကွက်စီးဆင်းမှု" : "Market Pulse",
+      href: "/market-pulse",
+    },
+    {
+      id: "trade-mastery",
+      icon: Zap,
+      label: isMyanmar ? "ကုန်သွယ်မှုကျွမ်းကျင်မှု" : "Trade Mastery",
+      href: "/trade-mastery",
+    },
+    {
+      id: "geopolitics",
+      icon: Globe,
+      label: isMyanmar ? "ပထဝီနိုင်ငံရေး" : "Geopolitics",
+      href: "/geopolitics",
+    },
+    {
+      id: "sample-projects",
+      icon: Map,
+      label: isMyanmar ? "နမူနာစီမံကိန်းများ" : "Sample Projects",
+      href: "/sample-projects",
+    },
   ];
 
   useEffect(() => {
@@ -48,7 +83,6 @@ export default function Navigation() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu on location change
   useEffect(() => {
     setIsMobileMenuOpen(false);
   }, [location]);
@@ -68,12 +102,11 @@ export default function Navigation() {
 
   return (
     <>
-      {/* Sticky Header */}
       <header
         className={cn(
           "fixed top-0 left-0 right-0 z-50 transition-all duration-300 border-b",
           isScrolled || isMobileMenuOpen
-            ? "bg-background/95 backdrop-blur-md border-primary/20 py-3" 
+            ? "bg-background/95 backdrop-blur-md border-primary/20 py-3"
             : "bg-transparent border-transparent py-5"
         )}
       >
@@ -85,12 +118,12 @@ export default function Navigation() {
                 size="icon"
                 onClick={goBack}
                 className="text-primary hover:bg-primary/10"
-                title="နောက်သို့"
+                title={isMyanmar ? "နောက်သို့" : "Back"}
               >
                 <ChevronLeft className="w-6 h-6" />
               </Button>
             )}
-            <div 
+            <div
               className="font-bold text-xl cursor-pointer flex items-center gap-2"
               onClick={() => navigateTo("/")}
             >
@@ -99,7 +132,6 @@ export default function Navigation() {
             </div>
           </div>
 
-          {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-2">
             <Button
               variant="ghost"
@@ -111,7 +143,7 @@ export default function Navigation() {
               )}
             >
               <Home className="w-4 h-4 mr-2" />
-              ပင်မစာမျက်နှာ
+              {isMyanmar ? "ပင်မစာမျက်နှာ" : "Home"}
             </Button>
 
             <DropdownMenu>
@@ -124,7 +156,7 @@ export default function Navigation() {
                     location !== "/" && location !== "/404" && "text-primary bg-primary/10"
                   )}
                 >
-                  ကဏ္ဍများ
+                  {isMyanmar ? "ကဏ္ဍများ" : "Modules"}
                   <ChevronDown className="w-4 h-4 ml-1" />
                 </Button>
               </DropdownMenuTrigger>
@@ -147,10 +179,37 @@ export default function Navigation() {
                 })}
               </DropdownMenuContent>
             </DropdownMenu>
+
+            <div className="flex items-center gap-1 rounded-md border border-primary/30 p-1">
+              <Button
+                variant={language === "my" ? "default" : "ghost"}
+                size="sm"
+                className="h-7 px-2 text-xs"
+                onClick={() => setLanguage("my")}
+              >
+                MM
+              </Button>
+              <Button
+                variant={language === "en" ? "default" : "ghost"}
+                size="sm"
+                className="h-7 px-2 text-xs"
+                onClick={() => setLanguage("en")}
+              >
+                EN
+              </Button>
+            </div>
           </nav>
 
-          {/* Mobile Menu Toggle */}
-          <div className="md:hidden flex items-center">
+          <div className="md:hidden flex items-center gap-2">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setLanguage(language === "my" ? "en" : "my")}
+              className="text-primary"
+              title={isMyanmar ? "ဘာသာပြောင်းရန်" : "Switch language"}
+            >
+              <Languages className="w-5 h-5" />
+            </Button>
             <Button
               variant="ghost"
               size="icon"
@@ -162,10 +221,28 @@ export default function Navigation() {
           </div>
         </div>
 
-        {/* Mobile Navigation Menu */}
         {isMobileMenuOpen && (
           <div className="md:hidden absolute top-full left-0 right-0 bg-background/95 backdrop-blur-md border-b border-primary/20 py-4 px-6 animate-in slide-in-from-top duration-300">
             <div className="flex flex-col gap-2">
+              <div className="mb-3 flex items-center justify-end gap-2">
+                <Button
+                  variant={language === "my" ? "default" : "ghost"}
+                  size="sm"
+                  className="h-8 px-3"
+                  onClick={() => setLanguage("my")}
+                >
+                  Myanmar
+                </Button>
+                <Button
+                  variant={language === "en" ? "default" : "ghost"}
+                  size="sm"
+                  className="h-8 px-3"
+                  onClick={() => setLanguage("en")}
+                >
+                  English
+                </Button>
+              </div>
+
               <Button
                 variant="ghost"
                 className={cn(
@@ -175,13 +252,15 @@ export default function Navigation() {
                 onClick={() => navigateTo("/")}
               >
                 <Home className="w-5 h-5 mr-3" />
-                ပင်မစာမျက်နှာ
+                {isMyanmar ? "ပင်မစာမျက်နှာ" : "Home"}
               </Button>
-              
+
               <div className="mt-4 mb-2 px-4">
-                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">ကုန်သွယ်မှုကဏ္ဍများ</p>
+                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground">
+                  {isMyanmar ? "ကုန်သွယ်မှုကဏ္ဍများ" : "Trade Modules"}
+                </p>
               </div>
-              
+
               <div className="grid grid-cols-1 gap-1">
                 {modules.map((module) => {
                   const Icon = module.icon;
@@ -208,7 +287,6 @@ export default function Navigation() {
         )}
       </header>
 
-      {/* Scroll to Top Button */}
       <Button
         variant="secondary"
         size="icon"
@@ -217,7 +295,7 @@ export default function Navigation() {
           "fixed bottom-6 right-6 z-50 rounded-full shadow-lg transition-all duration-300 border border-primary/30 bg-background/80 backdrop-blur-sm text-primary hover:bg-primary hover:text-primary-foreground",
           showScrollTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10 pointer-events-none"
         )}
-        title="အပေါ်သို့ပြန်သွားရန်"
+        title={isMyanmar ? "အပေါ်သို့ပြန်သွားရန်" : "Back to top"}
       >
         <ArrowUp className="w-5 h-5" />
       </Button>
