@@ -31,9 +31,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
     const status = query.trim() ? 200 : 400;
     res.status(status).json(response);
   } catch (error) {
+    const message = error instanceof Error ? error.message : "Unexpected search error.";
+    console.error("Search API Error:", message);
     res.status(500).json({
       results: [],
-      message: error instanceof Error ? error.message : "Unexpected search error.",
+      message: `Search failed: ${message}. Check your Vercel environment variables (OPENAI_API_KEY, SUPABASE_URL, SUPABASE_ANON_KEY).`,
     });
   }
 }

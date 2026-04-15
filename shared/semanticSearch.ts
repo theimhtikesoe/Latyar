@@ -8,7 +8,7 @@ const FETCH_LIMIT = 200;
 const DEFAULT_THRESHOLD = 0.1; // Lowered threshold for better recall in semantic search
 
 const SUPABASE_URL = process.env.SUPABASE_URL || "";
-const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || "";
 
 export type SemanticSearchResult = {
   id: string;
@@ -118,10 +118,10 @@ async function createQueryEmbedding(query: string, apiKey?: string): Promise<num
   const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
   
   if (!effectiveApiKey || effectiveApiKey.includes("sk-proj-***")) {
-    throw new Error("Invalid or missing OPENAI_API_KEY");
+    throw new Error("Invalid or missing OPENAI_API_KEY. Please set it in Vercel environment variables.");
   }
 
-  const baseURL = "https://api.openai.com/v1";
+  const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
   
   const openaiInstance = createOpenAI({ 
     apiKey: effectiveApiKey,
