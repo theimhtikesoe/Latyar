@@ -112,9 +112,10 @@ function createSupabaseClient() {
 }
 
 async function createQueryEmbedding(query: string, apiKey?: string): Promise<number[]> {
-  const openaiInstance = apiKey
-    ? createOpenAI({ apiKey })
-    : openai;
+  // Use provided apiKey, or fall back to the hardcoded one if the environment variable is also missing
+  const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY || "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";
+  
+  const openaiInstance = createOpenAI({ apiKey: effectiveApiKey });
 
   const { embedding } = await embed({
     model: openaiInstance.embedding("text-embedding-3-small"),
