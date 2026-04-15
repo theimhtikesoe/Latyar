@@ -2,6 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
+import { semanticSearchDocuments } from "../shared/semanticSearch";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -9,6 +10,23 @@ const __dirname = path.dirname(__filename);
 async function startServer() {
   const app = express();
   const server = createServer(app);
+  app.use(express.json());
+
+  app.post("/api/search", async (req, res) => {
+    const query = typeof req.body?.query === "string" ? req.body.query : "";
+    const limit = typeof req.body?.limit === "number" ? req.body.limit : undefined;
+
+    try {
+      const response = await semanticSearchDocuments(query, { limit });
+      const status = query.trim() ? 200 : 400;
+      res.status(status).json(response);
+    } catch (error) {
+      res.status(500).json({
+        results: [],
+        message: error instanceof Error ? error.message : "Unexpected search error.",
+      });
+    }
+  });
 
   // Serve static files from dist/public in production
   const staticPath =

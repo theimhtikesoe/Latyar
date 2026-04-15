@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, BookOpen, Briefcase, Globe, TrendingUp, Zap, Map } from "lucide-react";
 import { useLocation } from "wouter";
+import SemanticSearch from "@/components/SemanticSearch";
 
 export default function Home() {
   const [, navigate] = useLocation();
@@ -100,6 +101,12 @@ export default function Home() {
               </Button>
             </div>
           </div>
+        </div>
+      </section>
+
+      <section className="section-padding">
+        <div className="container max-w-4xl">
+          <SemanticSearch />
         </div>
       </section>
 
