@@ -44,8 +44,21 @@ export default function SemanticSearch() {
         body: JSON.stringify({ query: query.trim(), limit: 5 }),
       });
 
+      const contentType = response.headers.get("content-type") ?? "";
+      if (!contentType.includes("application/json")) {
+        setResults([]);
+        setMessage(`Search API error (${response.status}).`);
+        return;
+      }
+
       const payload = (await response.json()) as SearchResponse;
       setResults(payload.results ?? []);
+
+      if (!response.ok) {
+        setMessage(payload.message ?? `Search API error (${response.status}).`);
+        return;
+      }
+
       setMessage(payload.message ?? null);
     } catch {
       setResults([]);
