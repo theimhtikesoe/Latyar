@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { semanticSearchDocuments } from "../../shared/semanticSearch";
+import { semanticSearchDocuments } from "../shared/semanticSearch";
 
 type SearchRequestBody = {
   query?: unknown;

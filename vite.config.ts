@@ -74,6 +74,26 @@ function writeToLogFile(source: LogSource, entries: unknown[]) {
  * - Files: browserConsole.log, networkRequests.log, sessionReplay.log
  * - Auto-trimmed when exceeding 1MB (keeps newest entries)
  */
+/**
+ * Vite plugin to handle analytics environment variables in index.html
+ */
+function vitePluginAnalytics(): Plugin {
+  return {
+    name: "vite-plugin-analytics",
+    transformIndexHtml: {
+      order: "pre",
+      handler(html) {
+        const endpoint = process.env.VITE_ANALYTICS_ENDPOINT || "";
+        const websiteId = process.env.VITE_ANALYTICS_WEBSITE_ID || "";
+
+        return html
+          .replace(/%VITE_ANALYTICS_ENDPOINT%/g, endpoint)
+          .replace(/%VITE_ANALYTICS_WEBSITE_ID%/g, websiteId);
+      },
+    },
+  };
+}
+
 function vitePluginManusDebugCollector(): Plugin {
   return {
     name: "manus-debug-collector",
@@ -150,7 +170,14 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime(), vitePluginManusDebugCollector()];
+const plugins = [
+  react(),
+  tailwindcss(),
+  jsxLocPlugin(),
+  vitePluginManusRuntime(),
+  vitePluginAnalytics(),
+  vitePluginManusDebugCollector(),
+];
 
 export default defineConfig({
   plugins,
