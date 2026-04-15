@@ -7,8 +7,8 @@ const MAX_LIMIT = 20;
 const FETCH_LIMIT = 200;
 const DEFAULT_THRESHOLD = 0.1; // Lowered threshold for better recall in semantic search
 
-const SUPABASE_URL = "https://kwlyitkkhnlhqxyojciu.supabase.co";
-const SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3bHlpdGtraG5saHF4eW9qY2l1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjI2NzkwMiwiZXhwIjoyMDkxODQzOTAyfQ.7DQvqJyRkBszeX_wMv9eENxlmMAuLe1iey9_ARtmoLk";
+const SUPABASE_URL = process.env.SUPABASE_URL || "";
+const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY || "";
 
 export type SemanticSearchResult = {
   id: string;
@@ -115,7 +115,12 @@ function createSupabaseClient() {
 }
 
 async function createQueryEmbedding(query: string, apiKey?: string): Promise<number[]> {
-  const effectiveApiKey = apiKey || "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";
+  const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
+  
+  if (!effectiveApiKey) {
+    throw new Error("Missing OPENAI_API_KEY environment variable");
+  }
+
   const baseURL = "https://api.openai.com/v1";
   
   const openaiInstance = createOpenAI({ 

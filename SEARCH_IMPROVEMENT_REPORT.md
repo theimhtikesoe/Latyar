@@ -24,7 +24,7 @@ The Semantic Search functionality in Latyar has been significantly enhanced to p
 To ensure the search works correctly in your production environment, please set the following environment variables:
 
 1.  `OPENAI_API_KEY`: Your valid OpenAI API key.
-2.  `SUPABASE_URL`: `https://kwlyitkkhnlhqxyojciu.supabase.co`
+2.  `SUPABASE_URL`: Your Supabase project URL.
 3.  `SUPABASE_ANON_KEY`: The provided public anon key.
 4.  `OPENAI_BASE_URL`: `https://api.openai.com/v1` (to ensure standard API usage).
 

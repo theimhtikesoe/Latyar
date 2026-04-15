@@ -10,7 +10,7 @@ The Semantic Search feature is currently non-functional due to several critical 
 
 | Issue | Description | Impact |
 | :--- | :--- | :--- |
-| **Invalid API Key** | The code contains a hardcoded OpenAI API key (`sk-proj-...vacA`) which is **invalid** or has expired. | All search attempts fail with a `401 Unauthorized` error from OpenAI. |
+| **Invalid API Key** | The code previously contained a hardcoded OpenAI API key which was invalid or expired. | All search attempts failed with a `401 Unauthorized` error from OpenAI. |
 | **Missing Environment Variables** | The system requires `SUPABASE_URL` and `SUPABASE_ANON_KEY` to be set in the environment, but they are missing. | The search cannot connect to the database to retrieve documents. |
 | **API Proxy Conflict** | In some environments, the AI SDK attempts to use a proxy (`api.manus.im`) which results in a `404 Not Found` for the embeddings endpoint. | Prevents the generation of search vectors. |
 
