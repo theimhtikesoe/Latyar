@@ -20,7 +20,6 @@ type SearchResponse = {
 
 export default function SemanticSearch() {
   const [query, setQuery] = useState("");
-  const [apiKey, setApiKey] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<SearchResult[]>([]);
   const [message, setMessage] = useState<string | null>(null);
@@ -45,7 +44,6 @@ export default function SemanticSearch() {
     searching: isMyanmar ? "ရှာဖွေနေသည်..." : "Searching...",
     similarity: isMyanmar ? "ဆင်တူမှု" : "Similarity",
     untitled: isMyanmar ? "ခေါင်းစဉ်မရှိသော စာရွက်စာတမ်း" : "Untitled Document",
-    apiKeyPlaceholder: isMyanmar ? "OpenAI API Key (မဖြစ်မနေမဟုတ်ပါ)" : "OpenAI API Key (optional)",
   };
 
   async function handleSearch(event: FormEvent<HTMLFormElement>) {
@@ -67,7 +65,6 @@ export default function SemanticSearch() {
         body: JSON.stringify({
           query: query.trim(),
           limit: 5,
-          apiKey: apiKey.trim() || undefined,
         }),
       });
 
@@ -102,28 +99,17 @@ export default function SemanticSearch() {
         <CardDescription>{copy.description}</CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <form onSubmit={handleSearch} className="flex flex-col gap-3">
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Input
-              value={query}
-              onChange={(event) => setQuery(event.target.value)}
-              placeholder={copy.placeholder}
-              aria-label={isMyanmar ? "အသိပညာအခြေပြု ရှာဖွေမှု" : "Semantic search query"}
-              className="flex-grow"
-            />
-            <Button type="submit" className="sm:w-auto" disabled={isLoading}>
-              <Search className="mr-2 h-4 w-4" />
-              {isLoading ? copy.searching : copy.submit}
-            </Button>
-          </div>
+        <form onSubmit={handleSearch} className="flex flex-col gap-3 sm:flex-row">
           <Input
-            type="password"
-            value={apiKey}
-            onChange={(event) => setApiKey(event.target.value)}
-            placeholder={copy.apiKeyPlaceholder}
-            aria-label="OpenAI API Key"
-            className="text-xs"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+            placeholder={copy.placeholder}
+            aria-label={isMyanmar ? "အသိပညာအခြေပြု ရှာဖွေမှု" : "Semantic search query"}
           />
+          <Button type="submit" className="sm:w-auto" disabled={isLoading}>
+            <Search className="mr-2 h-4 w-4" />
+            {isLoading ? copy.searching : copy.submit}
+          </Button>
         </form>
 
         {message ? (
