@@ -115,7 +115,7 @@ function createSupabaseClient() {
 }
 
 async function createQueryEmbedding(query: string, apiKey?: string): Promise<number[]> {
-  const effectiveApiKey = apiKey || getEnv("OPENAI_API_KEY");
+  const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
   const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
   
   if (!effectiveApiKey) {
