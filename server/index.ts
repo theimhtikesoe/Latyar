@@ -2,7 +2,7 @@ import express from "express";
 import { createServer } from "http";
 import path from "path";
 import { fileURLToPath } from "url";
-import { semanticSearchDocuments } from "../shared/semanticSearch";
+import { performHybridSearch } from "../shared/hybridSearch";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,12 +18,14 @@ async function startServer() {
     const apiKey = typeof req.body?.apiKey === "string" ? req.body.apiKey : undefined;
 
     try {
-      const response = await semanticSearchDocuments(query, { limit, apiKey });
+      const response = await performHybridSearch(query, { limit, apiKey });
       const status = query.trim() ? 200 : 400;
       res.status(status).json(response);
     } catch (error) {
       res.status(500).json({
-        results: [],
+        internalResults: [],
+        newsResults: [],
+        synthesizedSummary: "",
         message: error instanceof Error ? error.message : "Unexpected search error.",
       });
     }

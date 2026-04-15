@@ -1,4 +1,4 @@
-import { semanticSearchDocuments } from "../../../shared/semanticSearch";
+import { performHybridSearch } from "../../../shared/hybridSearch";
 
 type SearchRequestBody = {
   query?: unknown;
@@ -30,13 +30,15 @@ export async function POST(request: Request): Promise<Response> {
   const { query, limit } = getSearchPayload(body);
 
   try {
-    const response = await semanticSearchDocuments(query, { limit });
+    const response = await performHybridSearch(query, { limit });
     const status = query.trim() ? 200 : 400;
     return Response.json(response, { status });
   } catch (error) {
     return Response.json(
       {
-        results: [],
+        internalResults: [],
+        newsResults: [],
+        synthesizedSummary: "",
         message: error instanceof Error ? error.message : "Unexpected search error.",
       },
       { status: 500 }
