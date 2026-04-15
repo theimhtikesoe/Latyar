@@ -8,7 +8,7 @@ const FETCH_LIMIT = 200;
 const DEFAULT_THRESHOLD = 0.2;
 
 const SUPABASE_URL = "https://kwlyitkkhnlhqxyojciu.supabase.co";
-const SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3bHlpdGtraG5saHF4eXlqY2l1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjI2NzkwMiwiZXhwIjoyMDkxODQzOTAyfQ.7DQvqJyRkBszeX_wMv9eENxlmMAuLe1iey9_ARtmoLk";
+const SUPABASE_SERVICE_ROLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imt3bHlpdGtraG5saHF4eW9qY2l1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjI2NzkwMiwiZXhwIjoyMDkxODQzOTAyfQ.7DQvqJyRkBszeX_wMv9eENxlmMAuLe1iey9_ARtmoLk";
 
 export type SemanticSearchResult = {
   id: string;
@@ -117,6 +117,7 @@ function createSupabaseClient() {
 async function createQueryEmbedding(query: string, apiKey?: string): Promise<number[]> {
   const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
   const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
+  const finalBaseURL = baseURL.endsWith('/v1') ? baseURL : `${baseURL}/v1`;
   
   if (!effectiveApiKey) {
     throw new Error("Missing OPENAI_API_KEY for semantic search.");
@@ -124,7 +125,7 @@ async function createQueryEmbedding(query: string, apiKey?: string): Promise<num
 
   const openaiInstance = createOpenAI({ 
     apiKey: effectiveApiKey,
-    baseURL: baseURL
+    baseURL: finalBaseURL
   });
 
   const { embedding } = await embed({
