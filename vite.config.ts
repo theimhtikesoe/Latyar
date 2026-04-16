@@ -204,6 +204,9 @@ function vitePluginLocalSearchApi(): Plugin {
               query?: unknown;
               limit?: unknown;
               apiKey?: unknown;
+              includeNews?: unknown;
+              includeSummary?: unknown;
+              language?: unknown;
             };
 
             const query = typeof payload.query === "string" ? payload.query : "";
@@ -211,8 +214,9 @@ function vitePluginLocalSearchApi(): Plugin {
             const apiKey = typeof payload.apiKey === "string" ? payload.apiKey : undefined;
             const includeNews = typeof payload.includeNews === "boolean" ? payload.includeNews : true;
             const includeSummary = typeof payload.includeSummary === "boolean" ? payload.includeSummary : true;
+            const language = typeof payload.language === "string" ? payload.language : undefined;
 
-            const result = await performHybridSearch(query, { limit, apiKey, includeNews, includeSummary });
+            const result = await performHybridSearch(query, { limit, apiKey, includeNews, includeSummary, language });
             const status = query.trim() ? 200 : 400;
             res.writeHead(status, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));

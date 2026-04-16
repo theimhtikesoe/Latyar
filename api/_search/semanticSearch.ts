@@ -272,6 +272,8 @@ export async function semanticSearchDocuments(
       };
     }
 
+    // Fallback to generic documents disabled to ensure relevance
+    /*
     if (ALWAYS_RETURN_RESULTS) {
       const anyDocs = await fetchAnyDocuments(limit);
       if (anyDocs.length > 0) {
@@ -281,6 +283,7 @@ export async function semanticSearchDocuments(
         };
       }
     }
+    */
 
     return { results: [], message: "No results found for this query." };
   }
@@ -362,10 +365,13 @@ export async function semanticSearchDocuments(
   const tokens = await fetchTokenFallback(trimmedQuery, limit);
   if (tokens.length > 0) return { results: tokens, message: "No exact match. Showing partial keyword matches." };
 
+  // Fallback to generic documents disabled to ensure relevance
+  /*
   if (ALWAYS_RETURN_RESULTS) {
     const anyDocs = await fetchAnyDocuments(limit);
     if (anyDocs.length > 0) return { results: anyDocs, message: "No match found. Showing suggested documents." };
   }
+  */
 
   return { results: [], message: "No results found for this query." };
 }
