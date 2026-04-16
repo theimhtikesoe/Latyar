@@ -58,10 +58,18 @@ async function synthesizeResults(
   apiKey?: string
 ): Promise<string> {
   const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
-  if (!effectiveApiKey || effectiveApiKey.includes("sk-proj-***") || effectiveApiKey === "your_openai_api_key") {
-    console.error("OpenAI API Key is missing or invalid.");
-    return "Unable to synthesize results due to missing API key. Please check your server configuration.";
+  
+  if (!effectiveApiKey) {
+    console.error("❌ OPENAI_API_KEY is not set in environment variables.");
+    return "Unable to synthesize results due to missing API key. Please configure OPENAI_API_KEY in your environment.";
   }
+
+  if (effectiveApiKey.includes("sk-proj-***") || effectiveApiKey === "your_openai_api_key") {
+    console.error("❌ OPENAI_API_KEY contains placeholder value. Please set a real API key.");
+    return "Unable to synthesize results due to invalid API key. Please check your server configuration.";
+  }
+
+  console.log("✅ OPENAI_API_KEY is configured. Starting synthesis...");
 
   const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
   const openaiInstance = createOpenAI({ apiKey: effectiveApiKey, baseURL });
@@ -102,18 +110,21 @@ Please synthesize the above information into a professional, actionable summary 
 
   for (const modelName of summaryModelCandidates) {
     try {
+      console.log(`Attempting synthesis with model: ${modelName}`);
       const { text } = await generateText({
         model: openaiInstance(modelName),
         system: systemPrompt,
         prompt: userPrompt,
         temperature: 0.6,
       });
+      console.log(`✅ Successfully synthesized with ${modelName}`);
       return text;
-    } catch {
-      // try next
+    } catch (error) {
+      console.warn(`⚠️ Model ${modelName} failed:`, error instanceof Error ? error.message : error);
     }
   }
 
+  console.error("❌ Failed to synthesize results with all candidate models.");
   return "";
 }
 
@@ -156,8 +167,13 @@ export async function performHybridSearch(
   try {
     synthesizedSummary = await Promise.race([synthesisPromise, timeoutPromise]);
   } catch (error) {
-    console.warn("Synthesis failed or timed out:", error);
-    synthesizedSummary = shouldSummarize ? "Summary generation is taking longer than expected. Please try again later." : "";
+    if (error instanceof Error && error.message === "Synthesis timeout") {
+      console.warn("⚠️ Synthesis timed out after 15 seconds");
+      synthesizedSummary = shouldSummarize ? "Summary generation is taking longer than expected. Please try again later." : "";
+    } else {
+      console.error("❌ Synthesis failed:", error instanceof Error ? error.message : error);
+      synthesizedSummary = shouldSummarize ? "Summary generation failed. Please try again later." : "";
+    }
   }
 
   return {
@@ -165,7 +181,7 @@ export async function performHybridSearch(
     newsResults,
     synthesizedSummary:
       synthesizedSummary ||
-      (shouldSummarize && !options?.apiKey && !process.env.OPENAI_API_KEY ? "Unable to synthesize results due to missing API key." : ""),
+      (shouldSummarize && !options?.apiKey && !process.env.OPENAI_API_KEY ? "Unable to synthesize results due to missing API key. Please configure OPENAI_API_KEY in your environment." : ""),
     message: internalResponse.message,
   };
 }

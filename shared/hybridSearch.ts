@@ -78,10 +78,17 @@ async function synthesizeResults(
 ): Promise<string> {
   const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
 
-  if (!effectiveApiKey || effectiveApiKey.includes("sk-proj-***") || effectiveApiKey === "your_openai_api_key") {
-    console.error("OpenAI API Key is missing or invalid in environment variables.");
-    return "Unable to synthesize results due to missing API key. Please check your server configuration.";
+  if (!effectiveApiKey) {
+    console.error("❌ OPENAI_API_KEY is not set in environment variables.");
+    return "Unable to synthesize results due to missing API key. Please configure OPENAI_API_KEY in your environment.";
   }
+
+  if (effectiveApiKey.includes("sk-proj-***") || effectiveApiKey === "your_openai_api_key") {
+    console.error("❌ OPENAI_API_KEY contains placeholder value. Please set a real API key.");
+    return "Unable to synthesize results due to invalid API key. Please check your server configuration.";
+  }
+
+  console.log("✅ OPENAI_API_KEY is configured. Starting synthesis...");
 
   try {
     const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
@@ -128,23 +135,26 @@ Please synthesize the above information into a professional, actionable summary 
     let lastError: unknown = null;
     for (const modelName of summaryModelCandidates) {
       try {
+        console.log(`Attempting synthesis with model: ${modelName}`);
         const { text } = await generateText({
           model: openaiInstance(modelName),
           system: systemPrompt,
           prompt: userPrompt,
           temperature: 0.6,
         });
+        console.log(`✅ Successfully synthesized with ${modelName}`);
         return text;
       } catch (error) {
+        console.warn(`⚠️ Model ${modelName} failed:`, error instanceof Error ? error.message : error);
         lastError = error;
       }
     }
 
-    console.warn("Failed to synthesize results with all candidate models:", lastError);
-    return "Unable to synthesize results at this time.";
+    console.error("❌ Failed to synthesize results with all candidate models:", lastError);
+    return "Unable to synthesize results at this time. All LLM models failed.";
   } catch (error) {
-    console.warn("Failed to synthesize results:", error);
-    return "Unable to synthesize results at this time.";
+    console.error("❌ Synthesis error:", error instanceof Error ? error.message : error);
+    return "Unable to synthesize results at this time. Please check your API configuration.";
   }
 }
 
