@@ -110,12 +110,19 @@ async function synthesizeResults(
             .join("\n")}`
         : "No recent news found.";
 
-    const systemPrompt = `You are a helpful assistant that synthesizes information from internal documentation and external news sources. 
-Provide a clear, concise summary that combines both sources to answer the user's query about "${query}".
-Format your response in a professional manner, highlighting key insights from both internal and external sources.
-Use the language of the query (Myanmar or English).`;
+    const systemPrompt = `You are an expert economic analyst specializing in Myanmar's trade and market conditions.
+Your goal is to provide a strategic summary based on internal data and latest internet news for the query: "${query}".
+Focus on practical insights, current trends, regulatory impacts, and economic implications in Myanmar.
+Always respond in the language used in the query (Myanmar or English).
+Highlight key takeaways and current status relevant to Myanmar's economy.`;
 
-    const userPrompt = `Query: "${query}"\n\n${internalContext}\n\n${newsContext}\n\nPlease provide a comprehensive summary combining both sources.`;
+    const userPrompt = `Contextual Query: "${query}" in Myanmar's economic environment.
+
+${internalContext}
+
+${newsContext}
+
+Please synthesize the above information into a professional, actionable summary for a business user. Highlight key takeaways, current status, and implications for Myanmar's economy.`;
 
     let lastError: unknown = null;
     for (const modelName of summaryModelCandidates) {
@@ -124,7 +131,7 @@ Use the language of the query (Myanmar or English).`;
           model: openaiInstance(modelName),
           system: systemPrompt,
           prompt: userPrompt,
-          temperature: 0.7,
+          temperature: 0.6,
         });
         return text;
       } catch (error) {
@@ -145,7 +152,7 @@ Use the language of the query (Myanmar or English).`;
  */
 export async function performHybridSearch(
   query: string,
-  options?: { limit?: number; apiKey?: string }
+  options?: { limit?: number; apiKey?: string; includeNews?: boolean; includeSummary?: boolean }
 ): Promise<HybridSearchResult> {
   const trimmedQuery = query.trim();
 
@@ -158,21 +165,27 @@ export async function performHybridSearch(
     };
   }
 
+  const includeNews = options?.includeNews ?? true;
+  const includeSummary = options?.includeSummary ?? true;
+
   try {
     // Fetch internal results from semantic search
     const internalResponse = await semanticSearchDocuments(trimmedQuery, options);
     const internalResults = internalResponse.results ?? [];
 
-    // Fetch external news in parallel
-    const newsResults = await fetchLatestNews(trimmedQuery);
+    // Fetch external news in parallel if requested
+    const newsResults = includeNews ? await fetchLatestNews(trimmedQuery) : [];
 
-    // Synthesize results using LLM
-    const synthesizedSummary = await synthesizeResults(
-      trimmedQuery,
-      internalResults,
-      newsResults,
-      options?.apiKey
-    );
+    // Synthesize results using LLM only if requested and we have content to synthesize
+    const shouldSummarize = includeSummary && (internalResults.length > 0 || newsResults.length > 0);
+    const synthesizedSummary = shouldSummarize
+      ? await synthesizeResults(
+          trimmedQuery,
+          internalResults,
+          newsResults,
+          options?.apiKey
+        )
+      : "";
 
     return {
       internalResults,
