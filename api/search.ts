@@ -7,6 +7,7 @@ type SearchRequestBody = {
   apiKey?: unknown;
   includeNews?: unknown;
   includeSummary?: unknown;
+  language?: unknown;
 };
 
 function getSearchPayload(body: SearchRequestBody): {
@@ -15,14 +16,16 @@ function getSearchPayload(body: SearchRequestBody): {
   apiKey?: string;
   includeNews?: boolean;
   includeSummary?: boolean;
+  language?: string;
 } {
   const query = typeof body.query === "string" ? body.query : "";
   const limit = typeof body.limit === "number" ? body.limit : undefined;
   const apiKey = typeof body.apiKey === "string" ? body.apiKey : undefined;
   const includeNews = typeof body.includeNews === "boolean" ? body.includeNews : undefined;
   const includeSummary = typeof body.includeSummary === "boolean" ? body.includeSummary : undefined;
+  const language = typeof body.language === "string" ? body.language : undefined;
 
-  return { query, limit, apiKey, includeNews, includeSummary };
+  return { query, limit, apiKey, includeNews, includeSummary, language };
 }
 
 export default async function handler(req: VercelRequest, res: VercelResponse): Promise<void> {
@@ -38,10 +41,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse): 
   }
 
   const body = (req.body ?? {}) as SearchRequestBody;
-  const { query, limit, apiKey, includeNews, includeSummary } = getSearchPayload(body);
+  const { query, limit, apiKey, includeNews, includeSummary, language } = getSearchPayload(body);
 
   try {
-    const response = await performHybridSearch(query, { limit, apiKey, includeNews, includeSummary });
+    const response = await performHybridSearch(query, { limit, apiKey, includeNews, includeSummary, language });
     const status = query.trim() ? 200 : 400;
     res.status(status).json(response);
   } catch (error) {

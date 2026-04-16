@@ -28,6 +28,7 @@ type HybridSearchResponse = {
   newsResults: NewsResult[];
   synthesizedSummary: string;
   message?: string;
+  directAnswer?: string;
 };
 
 function SkeletonLoader() {
@@ -82,6 +83,7 @@ export default function SemanticSearch() {
             limit: 5,
             includeNews,
             includeSummary,
+            language: isMyanmar ? "my" : "en",
           }),
         });
 
@@ -101,7 +103,7 @@ export default function SemanticSearch() {
         const payload = (await response.json()) as HybridSearchResponse;
         setInternalResults(payload.internalResults ?? []);
         setNewsResults(payload.newsResults ?? []);
-        setSynthesizedSummary(payload.synthesizedSummary ?? null);
+        setSynthesizedSummary(payload.directAnswer ?? payload.synthesizedSummary ?? null);
         setExpandedIds(new Set());
         setFullContentById({});
         setLoadingDocIds(new Set());
@@ -160,7 +162,8 @@ export default function SemanticSearch() {
     untitled: isMyanmar ? "ခေါင်းစဉ်မရှိသော စာရွက်စာတမ်း" : "Untitled Document",
     internalResults: isMyanmar ? "အတွင်းပိုင်း ရလဒ်များ" : "Internal Results",
     latestNews: isMyanmar ? "နောက်ဆုံးသတင်းများ" : "Latest News",
-    synthesizedSummary: isMyanmar ? "ပေါင်းစည်းသော အကျဉ်းချုပ်" : "Synthesized Summary",
+    synthesizedSummary: isMyanmar ? "အကျဉ်းချုပ်" : "Summary",
+    directAnswer: isMyanmar ? "တိုက်ရိုက် အဖြေ" : "Direct Answer",
     readMore: isMyanmar ? "ပိုမိုဖတ်ရှုရန်" : "Read More",
     showLess: isMyanmar ? "ဖျောက်ရန်" : "Show Less",
     includeNews: isMyanmar ? "နောက်ဆုံးသတင်း ထည့်မည်" : "Include news",
@@ -269,11 +272,11 @@ export default function SemanticSearch() {
           <SkeletonLoader />
         ) : (
           <>
-            {/* Synthesized Summary */}
+            {/* Direct Answer or Synthesized Summary */}
             {synthesizedSummary ? (
               <div className="rounded-md border border-primary/40 bg-primary/5 p-4">
                 <h3 className="font-semibold text-primary mb-2">{copy.synthesizedSummary}</h3>
-                <p className="text-sm text-foreground/80 leading-relaxed">{synthesizedSummary}</p>
+                <p className="text-sm text-foreground/80 leading-relaxed whitespace-pre-wrap">{synthesizedSummary}</p>
               </div>
             ) : null}
 

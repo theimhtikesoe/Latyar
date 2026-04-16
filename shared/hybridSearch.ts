@@ -14,6 +14,7 @@ export type HybridSearchResult = {
   internalResults: SemanticSearchResult[];
   newsResults: NewsResult[];
   synthesizedSummary: string;
+  directAnswer?: string;
   message?: string;
 };
 
@@ -82,18 +83,19 @@ async function synthesizeResults(
   query: string,
   internalResults: SemanticSearchResult[],
   newsResults: NewsResult[],
-  apiKey?: string
-): Promise<string> {
+  apiKey?: string,
+  language?: string
+): Promise<{ summary: string; directAnswer?: string }> {
   const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
 
   if (!effectiveApiKey) {
     console.error("❌ OPENAI_API_KEY is not set in environment variables.");
-    return "Unable to synthesize results due to missing API key. Please configure OPENAI_API_KEY in your environment.";
+    return { summary: "Unable to synthesize results due to missing API key. Please configure OPENAI_API_KEY in your environment." };
   }
 
   if (effectiveApiKey.includes("sk-proj-***") || effectiveApiKey === "your_openai_api_key") {
     console.error("❌ OPENAI_API_KEY contains placeholder value. Please set a real API key.");
-    return "Unable to synthesize results due to invalid API key. Please check your server configuration.";
+    return { summary: "Unable to synthesize results due to invalid API key. Please check your server configuration." };
   }
 
   console.log("✅ OPENAI_API_KEY is configured. Starting synthesis...");
@@ -105,6 +107,7 @@ async function synthesizeResults(
       baseURL: baseURL,
     });
 
+    const isMyanmar = language === "my";
     const summaryModelCandidates = [
       process.env.OPENAI_SUMMARY_MODEL,
       "gpt-4o-mini",
@@ -139,11 +142,12 @@ Analysis Framework:
 6. Recommendations: Provide actionable insights for business decision-making
 
 Response Guidelines:
-- Always respond in the language used in the query (Myanmar or English)
+- Always respond in ${isMyanmar ? "Myanmar" : "English"} language
 - Use specific data points and recent news when available
 - Highlight key takeaways and current status
 - Focus on practical, business-relevant information
-- Be concise but comprehensive`;
+- Be concise but comprehensive
+- If the query asks for specific numbers (prices, rates, etc.), provide them clearly at the beginning`;
 
     const userPrompt = `Analyze the following query in the context of Myanmar's economy and trade:
 
@@ -161,7 +165,7 @@ Based on the above internal documentation and latest news, provide a comprehensi
 5. Risks and opportunities
 6. Practical recommendations for stakeholders
 
-Provide a professional, data-driven summary suitable for business decision-makers.`;
+${isMyanmar ? "အကျဉ်းချုပ်ကို အလုပ်သမားများ၊ ကုန်သည်များ၊ ရင်းနှီးမြုပ်နှံသူများအတွက် အသုံးပြုနိုင်သော ပရော်ဖက်ရှင်နယ် အချက်အလက်အခြေခံ အကျဉ်းချုပ်ပြုလုပ်ပါ။" : "Provide a professional, data-driven summary suitable for business decision-makers."}`;
 
     let lastError: unknown = null;
     for (const modelName of summaryModelCandidates) {
@@ -174,7 +178,17 @@ Provide a professional, data-driven summary suitable for business decision-maker
           temperature: 0.6,
         });
         console.log(`✅ Successfully synthesized with ${modelName}`);
-        return text;
+        
+        // Extract direct answer if query asks for specific information
+        let directAnswer: string | undefined;
+        if (text && (query.toLowerCase().includes("price") || query.toLowerCase().includes("rate") || query.toLowerCase().includes("cost") || query.includes("စျေး") || query.includes("နှုန်း"))) {
+          const lines = text.split('\n');
+          if (lines.length > 0) {
+            directAnswer = lines[0];
+          }
+        }
+        
+        return { summary: text, directAnswer };
       } catch (error) {
         console.warn(`⚠️ Model ${modelName} failed:`, error instanceof Error ? error.message : error);
         lastError = error;
@@ -182,10 +196,10 @@ Provide a professional, data-driven summary suitable for business decision-maker
     }
 
     console.error("❌ Failed to synthesize results with all candidate models:", lastError);
-    return "Unable to synthesize results at this time. All LLM models failed.";
+    return { summary: "Unable to synthesize results at this time. All LLM models failed." };
   } catch (error) {
     console.error("❌ Synthesis error:", error instanceof Error ? error.message : error);
-    return "Unable to synthesize results at this time. Please check your API configuration.";
+    return { summary: "Unable to synthesize results at this time. Please check your API configuration." };
   }
 }
 
@@ -194,7 +208,7 @@ Provide a professional, data-driven summary suitable for business decision-maker
  */
 export async function performHybridSearch(
   query: string,
-  options?: { limit?: number; apiKey?: string; includeNews?: boolean; includeSummary?: boolean }
+  options?: { limit?: number; apiKey?: string; includeNews?: boolean; includeSummary?: boolean; language?: string }
 ): Promise<HybridSearchResult> {
   const trimmedQuery = query.trim();
 
@@ -224,25 +238,26 @@ export async function performHybridSearch(
     
     // Add a timeout to synthesis to prevent long waits
     const synthesisPromise = shouldSummarize
-      ? synthesizeResults(trimmedQuery, internalResults, newsResults, options?.apiKey)
-      : Promise.resolve("");
+      ? synthesizeResults(trimmedQuery, internalResults, newsResults, options?.apiKey, options?.language)
+      : Promise.resolve({ summary: "", directAnswer: undefined });
 
-    const timeoutPromise = new Promise<string>((_, reject) =>
+    const timeoutPromise = new Promise<{ summary: string; directAnswer?: string }>((_, reject) =>
       setTimeout(() => reject(new Error("Synthesis timeout")), 15000)
     );
 
-    let synthesizedSummary = "";
+    let synthesisResult = { summary: "", directAnswer: undefined };
     try {
-      synthesizedSummary = await Promise.race([synthesisPromise, timeoutPromise]);
+      synthesisResult = await Promise.race([synthesisPromise, timeoutPromise]);
     } catch (error) {
       console.warn("Synthesis failed or timed out:", error);
-      synthesizedSummary = shouldSummarize ? "Summary generation is taking longer than expected. Please try again later." : "";
+      synthesisResult = shouldSummarize ? { summary: "Summary generation is taking longer than expected. Please try again later." } : { summary: "" };
     }
 
     return {
       internalResults,
       newsResults,
-      synthesizedSummary,
+      synthesizedSummary: synthesisResult.summary,
+      directAnswer: synthesisResult.directAnswer,
       message: internalResponse.message,
     };
   } catch (error) {
