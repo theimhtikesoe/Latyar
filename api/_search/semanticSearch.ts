@@ -28,6 +28,9 @@ type DocumentsRow = {
   embedding: number[] | string | null;
 };
 
+const ALWAYS_RETURN_RESULTS =
+  (process.env.SEMANTIC_SEARCH_ALWAYS_RETURN_RESULTS ?? "true").toLowerCase() === "true";
+
 function normalizeLimit(limit?: number): number {
   if (!Number.isFinite(limit)) return DEFAULT_LIMIT;
   return Math.max(1, Math.min(MAX_LIMIT, Math.floor(limit as number)));
@@ -62,6 +65,14 @@ function normalizeEmbedding(value: DocumentsRow["embedding"]): number[] | null {
   }
 
   return null;
+}
+
+function splitQueryTokens(query: string): string[] {
+  return query
+    .split(/[\s,.;:!?()[\]{}"'“”‘’/\\|]+/g)
+    .map((token) => token.trim())
+    .filter((token) => token.length >= 3)
+    .slice(0, 8);
 }
 
 function cosineSimilarity(a: number[], b: number[]): number {
@@ -100,9 +111,13 @@ async function createQueryEmbedding(query: string, apiKey?: string): Promise<num
   return embedding;
 }
 
+function escapeLike(value: string): string {
+  return value.replace(/[%_]/g, (match) => `\\${match}`);
+}
+
 async function fetchLexicalFallback(query: string, limit: number): Promise<SemanticSearchResult[]> {
   const supabase = createSupabaseClient();
-  const escaped = query.replace(/[%_]/g, (match) => `\\${match}`);
+  const escaped = escapeLike(query);
   const pattern = `%${escaped}%`;
 
   const { data, error } = await supabase
@@ -113,6 +128,85 @@ async function fetchLexicalFallback(query: string, limit: number): Promise<Seman
 
   if (error) {
     throw new Error(`Supabase fallback search failed: ${error.message}`);
+  }
+
+  const rows = (data ?? []) as Array<{
+    id: unknown;
+    title: unknown;
+    content: unknown;
+    metadata: unknown;
+  }>;
+
+  return rows
+    .map((row) => {
+      const content = typeof row.content === "string" ? row.content : "";
+      if (!content) return null;
+
+      return {
+        id: String(row.id),
+        title: typeof row.title === "string" ? row.title : null,
+        content: toContentPreview(content),
+        metadata: (row.metadata as Record<string, unknown> | null) ?? null,
+        score: 0,
+      } satisfies SemanticSearchResult;
+    })
+    .filter((item): item is SemanticSearchResult => item !== null);
+}
+
+async function fetchTokenFallback(query: string, limit: number): Promise<SemanticSearchResult[]> {
+  const tokens = splitQueryTokens(query);
+  if (tokens.length === 0) return [];
+
+  const supabase = createSupabaseClient();
+  const conditions = tokens
+    .flatMap((token) => {
+      const pattern = `%${escapeLike(token)}%`;
+      return [`content.ilike.${pattern}`, `title.ilike.${pattern}`];
+    })
+    .join(",");
+
+  const { data, error } = await supabase
+    .from("documents")
+    .select("id, title, content, metadata")
+    .or(conditions)
+    .limit(limit);
+
+  if (error) {
+    throw new Error(`Supabase token fallback search failed: ${error.message}`);
+  }
+
+  const rows = (data ?? []) as Array<{
+    id: unknown;
+    title: unknown;
+    content: unknown;
+    metadata: unknown;
+  }>;
+
+  return rows
+    .map((row) => {
+      const content = typeof row.content === "string" ? row.content : "";
+      if (!content) return null;
+
+      return {
+        id: String(row.id),
+        title: typeof row.title === "string" ? row.title : null,
+        content: toContentPreview(content),
+        metadata: (row.metadata as Record<string, unknown> | null) ?? null,
+        score: 0,
+      } satisfies SemanticSearchResult;
+    })
+    .filter((item): item is SemanticSearchResult => item !== null);
+}
+
+async function fetchAnyDocuments(limit: number): Promise<SemanticSearchResult[]> {
+  const supabase = createSupabaseClient();
+  const { data, error } = await supabase
+    .from("documents")
+    .select("id, title, content, metadata")
+    .limit(limit);
+
+  if (error) {
+    throw new Error(`Supabase browse failed: ${error.message}`);
   }
 
   const rows = (data ?? []) as Array<{
@@ -162,11 +256,33 @@ export async function semanticSearchDocuments(
   try {
     embedding = await createQueryEmbedding(trimmedQuery, options?.apiKey);
   } catch {
-    const fallback = await fetchLexicalFallback(trimmedQuery, limit);
-    return {
-      results: fallback,
-      message: "Semantic search unavailable. Showing keyword matches instead.",
-    };
+    const phrase = await fetchLexicalFallback(trimmedQuery, limit);
+    if (phrase.length > 0) {
+      return {
+        results: phrase,
+        message: "Semantic search unavailable. Showing keyword matches instead.",
+      };
+    }
+
+    const tokens = await fetchTokenFallback(trimmedQuery, limit);
+    if (tokens.length > 0) {
+      return {
+        results: tokens,
+        message: "Semantic search unavailable. Showing partial keyword matches instead.",
+      };
+    }
+
+    if (ALWAYS_RETURN_RESULTS) {
+      const anyDocs = await fetchAnyDocuments(limit);
+      if (anyDocs.length > 0) {
+        return {
+          results: anyDocs,
+          message: "No match found. Showing suggested documents.",
+        };
+      }
+    }
+
+    return { results: [], message: "No results found for this query." };
   }
 
   // Vector RPC if available
@@ -241,8 +357,14 @@ export async function semanticSearchDocuments(
   }
 
   const lexical = await fetchLexicalFallback(trimmedQuery, limit);
-  if (lexical.length > 0) {
-    return { results: lexical, message: "Showing keyword matches." };
+  if (lexical.length > 0) return { results: lexical, message: "Showing keyword matches." };
+
+  const tokens = await fetchTokenFallback(trimmedQuery, limit);
+  if (tokens.length > 0) return { results: tokens, message: "No exact match. Showing partial keyword matches." };
+
+  if (ALWAYS_RETURN_RESULTS) {
+    const anyDocs = await fetchAnyDocuments(limit);
+    if (anyDocs.length > 0) return { results: anyDocs, message: "No match found. Showing suggested documents." };
   }
 
   return { results: [], message: "No results found for this query." };
