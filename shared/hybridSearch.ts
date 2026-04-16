@@ -29,15 +29,19 @@ async function fetchLatestNews(query: string): Promise<NewsResult[]> {
   }
 
   try {
+    // Enhance query with Myanmar economy context for better results
+    const enhancedQuery = `${query} Myanmar economy trade market 2024 2025`;
+    
     const response = await fetch("https://api.tavily.com/search", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         api_key: tavilyApiKey,
-        query: `${query} latest news`,
+        query: enhancedQuery,
         include_answer: true,
-        max_results: 5,
-        include_raw_content: false,
+        max_results: 10,
+        include_raw_content: true,
+        search_depth: "advanced",
       }),
     });
 
@@ -53,16 +57,20 @@ async function fetchLatestNews(query: string): Promise<NewsResult[]> {
         content: string;
         source: string;
       }>;
+      answer?: string;
     };
 
-    return (data.results ?? []).map((result) => ({
+    const results = (data.results ?? []).map((result) => ({
       title: result.title,
       url: result.url,
-      snippet: result.content.slice(0, 200),
+      snippet: result.content.slice(0, 300), // Increased snippet length for more context
       source: result.source,
     }));
+    
+    console.log(`✅ Fetched ${results.length} news results for query: "${query}"`);
+    return results;
   } catch (error) {
-    console.warn("Failed to fetch news:", error);
+    console.warn("⚠️ Failed to fetch news from Tavily:", error instanceof Error ? error.message : error);
     return [];
   }
 }
@@ -118,19 +126,42 @@ async function synthesizeResults(
             .join("\n")}`
         : "No recent news found.";
 
-    const systemPrompt = `You are an expert economic analyst specializing in Myanmar's trade and market conditions.
-Your goal is to provide a strategic summary based on internal data and latest internet news for the query: "${query}".
-Focus on practical insights, current trends, regulatory impacts, and economic implications in Myanmar.
-Always respond in the language used in the query (Myanmar or English).
-Highlight key takeaways and current status relevant to Myanmar's economy.`;
+    const systemPrompt = `You are an expert economic analyst specializing in Myanmar's trade, commerce, and market conditions.
+Your goal is to provide a comprehensive, strategic summary based on internal documentation and the latest internet news.
+Query: "${query}"
 
-    const userPrompt = `Contextual Query: "${query}" in Myanmar's economic environment.
+Analysis Framework:
+1. Current Market Status: Provide up-to-date information about the query topic in Myanmar's economy
+2. Key Trends: Identify emerging patterns and shifts in the market
+3. Regulatory Environment: Explain relevant policies, regulations, and compliance requirements
+4. Economic Implications: Assess impact on Myanmar's economy, trade, and business environment
+5. Risk Factors: Highlight potential challenges and opportunities
+6. Recommendations: Provide actionable insights for business decision-making
+
+Response Guidelines:
+- Always respond in the language used in the query (Myanmar or English)
+- Use specific data points and recent news when available
+- Highlight key takeaways and current status
+- Focus on practical, business-relevant information
+- Be concise but comprehensive`;
+
+    const userPrompt = `Analyze the following query in the context of Myanmar's economy and trade:
+
+Query: "${query}"
 
 ${internalContext}
 
 ${newsContext}
 
-Please synthesize the above information into a professional, actionable summary for a business user. Highlight key takeaways, current status, and implications for Myanmar's economy.`;
+Based on the above internal documentation and latest news, provide a comprehensive analysis that includes:
+1. Current situation and market status
+2. Key developments and recent news
+3. Regulatory and policy context
+4. Economic implications and trends
+5. Risks and opportunities
+6. Practical recommendations for stakeholders
+
+Provide a professional, data-driven summary suitable for business decision-makers.`;
 
     let lastError: unknown = null;
     for (const modelName of summaryModelCandidates) {
