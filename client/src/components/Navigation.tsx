@@ -124,14 +124,11 @@ export default function Navigation() {
               </Button>
             )}
             <div
-              className="font-bold text-xl cursor-pointer flex items-center gap-3"
+              className="font-bold text-xl cursor-pointer flex items-center gap-2"
               onClick={() => navigateTo("/")}
             >
               <img src="/favicon-32x32.png" alt="LatYar Logo" className="w-8 h-8 object-contain" />
-              <div className="flex flex-col sm:flex-row sm:items-center sm:gap-2">
-                <span className="text-primary neon-glow leading-tight">လက်ျာ</span>
-                <span className="hidden sm:inline text-foreground/80 text-[10px] font-medium tracking-[0.2em] mt-0.5">LATYAR</span>
-              </div>
+              <span className="text-foreground font-semibold tracking-tight">LatYar</span>
             </div>
           </div>
 
