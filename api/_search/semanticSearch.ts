@@ -29,7 +29,7 @@ type DocumentsRow = {
 };
 
 const ALWAYS_RETURN_RESULTS =
-  (process.env.SEMANTIC_SEARCH_ALWAYS_RETURN_RESULTS ?? "true").toLowerCase() === "true";
+  (process.env.SEMANTIC_SEARCH_ALWAYS_RETURN_RESULTS ?? "false").toLowerCase() === "true";
 
 function normalizeLimit(limit?: number): number {
   if (!Number.isFinite(limit)) return DEFAULT_LIMIT;

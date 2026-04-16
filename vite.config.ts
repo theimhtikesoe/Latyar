@@ -209,8 +209,10 @@ function vitePluginLocalSearchApi(): Plugin {
             const query = typeof payload.query === "string" ? payload.query : "";
             const limit = typeof payload.limit === "number" ? payload.limit : undefined;
             const apiKey = typeof payload.apiKey === "string" ? payload.apiKey : undefined;
+            const includeNews = typeof payload.includeNews === "boolean" ? payload.includeNews : true;
+            const includeSummary = typeof payload.includeSummary === "boolean" ? payload.includeSummary : true;
 
-            const result = await performHybridSearch(query, { limit, apiKey });
+            const result = await performHybridSearch(query, { limit, apiKey, includeNews, includeSummary });
             const status = query.trim() ? 200 : 400;
             res.writeHead(status, { "Content-Type": "application/json" });
             res.end(JSON.stringify(result));
