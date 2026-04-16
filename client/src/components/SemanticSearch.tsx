@@ -52,8 +52,8 @@ export default function SemanticSearch() {
   const [newsResults, setNewsResults] = useState<NewsResult[]>([]);
   const [synthesizedSummary, setSynthesizedSummary] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
-  const [includeNews, setIncludeNews] = useState(false);
-  const [includeSummary, setIncludeSummary] = useState(false);
+  const [includeNews, setIncludeNews] = useState(true);
+  const [includeSummary, setIncludeSummary] = useState(true);
   const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set());
   const [fullContentById, setFullContentById] = useState<Record<string, string>>({});
   const [loadingDocIds, setLoadingDocIds] = useState<Set<string>>(() => new Set());
@@ -146,8 +146,8 @@ export default function SemanticSearch() {
       : "Example - HS code classification for chemical imports",
     title: isMyanmar ? "အသိပညာအခြေပြု ရှာဖွေမှု" : "Semantic Search",
     description: isMyanmar
-      ? "OpenAI embedding + Supabase documents table + Latest News ဖြင့် အသိပညာအလိုက် ရှာဖွေပါ။"
-      : "Search by meaning using OpenAI embeddings, your Supabase documents, and latest news.",
+      ? "အင်တာနက်ပေါ်ရှိ နောက်ဆုံးရသတင်းများနှင့် အတွင်းပိုင်းအချက်အလက်များကို ပေါင်းစပ်ရှာဖွေပါ။"
+      : "Search combining latest internet news and internal insights.",
     emptyQuery: isMyanmar ? "ရှာဖွေရန် keyword တစ်ခုထည့်ပါ။" : "Please enter a keyword to search.",
     apiError: (status: number) =>
       isMyanmar ? `Search API error (${status})` : `Search API error (${status})`,

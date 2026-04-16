@@ -84,11 +84,18 @@ async function synthesizeResults(
           .join("\n")}`
       : "No recent news found.";
 
-  const systemPrompt = `You are a helpful assistant that synthesizes information from internal documentation and external news sources.
-Provide a clear, concise summary that combines both sources to answer the user's query about "${query}".
-Use the language of the query (Myanmar or English).`;
+  const systemPrompt = `You are an expert economic analyst specializing in Myanmar's trade and market conditions.
+Your goal is to provide a strategic summary based on internal data and latest internet news for the query: "${query}".
+Focus on practical insights, current trends, and regulatory impacts in Myanmar.
+Always respond in the language used in the query (Myanmar or English).`;
 
-  const userPrompt = `Query: "${query}"\n\n${internalContext}\n\n${newsContext}\n\nPlease provide a comprehensive summary combining both sources.`;
+  const userPrompt = `Contextual Query: "${query}" in Myanmar's economic environment.
+
+${internalContext}
+
+${newsContext}
+
+Please synthesize the above information into a professional, actionable summary for a business user. Highlight key takeaways and current status.`;
 
   for (const modelName of summaryModelCandidates) {
     try {
