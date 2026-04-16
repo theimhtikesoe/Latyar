@@ -58,7 +58,10 @@ async function synthesizeResults(
   apiKey?: string
 ): Promise<string> {
   const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
-  if (!effectiveApiKey) return "";
+  if (!effectiveApiKey || effectiveApiKey.includes("sk-proj-***") || effectiveApiKey === "your_openai_api_key") {
+    console.error("OpenAI API Key is missing or invalid.");
+    return "Unable to synthesize results due to missing API key. Please check your server configuration.";
+  }
 
   const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
   const openaiInstance = createOpenAI({ apiKey: effectiveApiKey, baseURL });
@@ -139,16 +142,30 @@ export async function performHybridSearch(
   const internalResults = internalResponse.results ?? [];
 
   const shouldSummarize = includeSummary && (internalResults.length > 0 || newsResults.length > 0);
-  const synthesizedSummary = shouldSummarize
-    ? await synthesizeResults(trimmedQuery, internalResults, newsResults, options?.apiKey)
-    : "";
+  
+  // Add a timeout to synthesis to prevent long waits
+  const synthesisPromise = shouldSummarize
+    ? synthesizeResults(trimmedQuery, internalResults, newsResults, options?.apiKey)
+    : Promise.resolve("");
+
+  const timeoutPromise = new Promise<string>((_, reject) =>
+    setTimeout(() => reject(new Error("Synthesis timeout")), 15000)
+  );
+
+  let synthesizedSummary = "";
+  try {
+    synthesizedSummary = await Promise.race([synthesisPromise, timeoutPromise]);
+  } catch (error) {
+    console.warn("Synthesis failed or timed out:", error);
+    synthesizedSummary = shouldSummarize ? "Summary generation is taking longer than expected. Please try again later." : "";
+  }
 
   return {
     internalResults,
     newsResults,
     synthesizedSummary:
       synthesizedSummary ||
-      (shouldSummarize && options?.apiKey ? "" : "Unable to synthesize results due to missing API key."),
+      (shouldSummarize && !options?.apiKey && !process.env.OPENAI_API_KEY ? "Unable to synthesize results due to missing API key." : ""),
     message: internalResponse.message,
   };
 }

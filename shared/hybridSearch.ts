@@ -78,8 +78,9 @@ async function synthesizeResults(
 ): Promise<string> {
   const effectiveApiKey = apiKey || process.env.OPENAI_API_KEY;
 
-  if (!effectiveApiKey || effectiveApiKey.includes("sk-proj-***")) {
-    return "Unable to synthesize results due to missing API key.";
+  if (!effectiveApiKey || effectiveApiKey.includes("sk-proj-***") || effectiveApiKey === "your_openai_api_key") {
+    console.error("OpenAI API Key is missing or invalid in environment variables.");
+    return "Unable to synthesize results due to missing API key. Please check your server configuration.";
   }
 
   try {
@@ -169,23 +170,33 @@ export async function performHybridSearch(
   const includeSummary = options?.includeSummary ?? true;
 
   try {
-    // Fetch internal results from semantic search
-    const internalResponse = await semanticSearchDocuments(trimmedQuery, options);
-    const internalResults = internalResponse.results ?? [];
+    // Fetch internal results and news in parallel for better performance
+    const [internalResponse, newsResults] = await Promise.all([
+      semanticSearchDocuments(trimmedQuery, options),
+      includeNews ? fetchLatestNews(trimmedQuery) : Promise.resolve([] as NewsResult[]),
+    ]);
 
-    // Fetch external news in parallel if requested
-    const newsResults = includeNews ? await fetchLatestNews(trimmedQuery) : [];
+    const internalResults = internalResponse.results ?? [];
 
     // Synthesize results using LLM only if requested and we have content to synthesize
     const shouldSummarize = includeSummary && (internalResults.length > 0 || newsResults.length > 0);
-    const synthesizedSummary = shouldSummarize
-      ? await synthesizeResults(
-          trimmedQuery,
-          internalResults,
-          newsResults,
-          options?.apiKey
-        )
-      : "";
+    
+    // Add a timeout to synthesis to prevent long waits
+    const synthesisPromise = shouldSummarize
+      ? synthesizeResults(trimmedQuery, internalResults, newsResults, options?.apiKey)
+      : Promise.resolve("");
+
+    const timeoutPromise = new Promise<string>((_, reject) =>
+      setTimeout(() => reject(new Error("Synthesis timeout")), 15000)
+    );
+
+    let synthesizedSummary = "";
+    try {
+      synthesizedSummary = await Promise.race([synthesisPromise, timeoutPromise]);
+    } catch (error) {
+      console.warn("Synthesis failed or timed out:", error);
+      synthesizedSummary = shouldSummarize ? "Summary generation is taking longer than expected. Please try again later." : "";
+    }
 
     return {
       internalResults,
