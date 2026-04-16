@@ -28,7 +28,7 @@ async function fetchLatestNews(query: string): Promise<NewsResult[]> {
       body: JSON.stringify({
         api_key: tavilyApiKey,
         query: `${query} latest news`,
-        include_answer: true,
+        include_answer: false,
         max_results: 5,
         include_raw_content: false,
       }),
@@ -109,7 +109,7 @@ Use the language of the query (Myanmar or English).`;
 
 export async function performHybridSearch(
   query: string,
-  options?: { limit?: number; apiKey?: string }
+  options?: { limit?: number; apiKey?: string; includeNews?: boolean; includeSummary?: boolean }
 ): Promise<HybridSearchResult> {
   const trimmedQuery = query.trim();
   if (!trimmedQuery) {
@@ -121,21 +121,27 @@ export async function performHybridSearch(
     };
   }
 
-  const internalResponse = await semanticSearchDocuments(trimmedQuery, options);
+  const includeNews = options?.includeNews ?? true;
+  const includeSummary = options?.includeSummary ?? true;
+
+  const [internalResponse, newsResults] = await Promise.all([
+    semanticSearchDocuments(trimmedQuery, options),
+    includeNews ? fetchLatestNews(trimmedQuery) : Promise.resolve([] as NewsResult[]),
+  ]);
+
   const internalResults = internalResponse.results ?? [];
 
-  const newsResults = await fetchLatestNews(trimmedQuery);
-  const synthesizedSummary = await synthesizeResults(
-    trimmedQuery,
-    internalResults,
-    newsResults,
-    options?.apiKey
-  );
+  const shouldSummarize = includeSummary && (internalResults.length > 0 || newsResults.length > 0);
+  const synthesizedSummary = shouldSummarize
+    ? await synthesizeResults(trimmedQuery, internalResults, newsResults, options?.apiKey)
+    : "";
 
   return {
     internalResults,
     newsResults,
-    synthesizedSummary: synthesizedSummary || (options?.apiKey ? "" : "Unable to synthesize results due to missing API key."),
+    synthesizedSummary:
+      synthesizedSummary ||
+      (shouldSummarize && options?.apiKey ? "" : "Unable to synthesize results due to missing API key."),
     message: internalResponse.message,
   };
 }

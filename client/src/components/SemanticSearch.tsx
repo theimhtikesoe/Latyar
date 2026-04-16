@@ -3,6 +3,7 @@ import { Search, ExternalLink, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Switch } from "@/components/ui/switch";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -51,6 +52,11 @@ export default function SemanticSearch() {
   const [newsResults, setNewsResults] = useState<NewsResult[]>([]);
   const [synthesizedSummary, setSynthesizedSummary] = useState<string | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [includeNews, setIncludeNews] = useState(false);
+  const [includeSummary, setIncludeSummary] = useState(false);
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(() => new Set());
+  const [fullContentById, setFullContentById] = useState<Record<string, string>>({});
+  const [loadingDocIds, setLoadingDocIds] = useState<Set<string>>(() => new Set());
   const { language } = useLanguage();
   const isMyanmar = language === "my";
 
@@ -74,6 +80,8 @@ export default function SemanticSearch() {
           body: JSON.stringify({
             query: searchQuery.trim(),
             limit: 5,
+            includeNews,
+            includeSummary,
           }),
         });
 
@@ -94,6 +102,9 @@ export default function SemanticSearch() {
         setInternalResults(payload.internalResults ?? []);
         setNewsResults(payload.newsResults ?? []);
         setSynthesizedSummary(payload.synthesizedSummary ?? null);
+        setExpandedIds(new Set());
+        setFullContentById({});
+        setLoadingDocIds(new Set());
 
         if (!response.ok) {
           setMessage(
@@ -117,7 +128,7 @@ export default function SemanticSearch() {
         setIsLoading(false);
       }
     },
-    [isMyanmar]
+    [includeNews, includeSummary, isMyanmar]
   );
 
   useEffect(() => {
@@ -151,7 +162,47 @@ export default function SemanticSearch() {
     latestNews: isMyanmar ? "နောက်ဆုံးသတင်းများ" : "Latest News",
     synthesizedSummary: isMyanmar ? "ပေါင်းစည်းသော အကျဉ်းချုပ်" : "Synthesized Summary",
     readMore: isMyanmar ? "ပိုမိုဖတ်ရှုရန်" : "Read More",
+    showLess: isMyanmar ? "ဖျောက်ရန်" : "Show Less",
+    includeNews: isMyanmar ? "နောက်ဆုံးသတင်း ထည့်မည်" : "Include news",
+    includeSummary: isMyanmar ? "အကျဉ်းချုပ် ထုတ်မည်" : "Generate summary",
+    loading: isMyanmar ? "ဖတ်ရှုနေသည်..." : "Loading...",
   };
+
+  async function toggleDocument(resultId: string) {
+    const next = new Set(expandedIds);
+    const isExpanded = next.has(resultId);
+    if (isExpanded) {
+      next.delete(resultId);
+      setExpandedIds(next);
+      return;
+    }
+
+    next.add(resultId);
+    setExpandedIds(next);
+
+    if (fullContentById[resultId]) {
+      return;
+    }
+
+    const nextLoading = new Set(loadingDocIds);
+    nextLoading.add(resultId);
+    setLoadingDocIds(nextLoading);
+
+    try {
+      const response = await fetch(`/api/document?id=${encodeURIComponent(resultId)}`);
+      const payload = (await response.json()) as { content?: unknown; message?: unknown };
+      const content = typeof payload.content === "string" ? payload.content : "";
+      setFullContentById((prev) => ({ ...prev, [resultId]: content }));
+    } catch {
+      setMessage(copy.connectError);
+    } finally {
+      setLoadingDocIds((prev) => {
+        const updated = new Set(prev);
+        updated.delete(resultId);
+        return updated;
+      });
+    }
+  }
 
   async function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -201,6 +252,17 @@ export default function SemanticSearch() {
           </Button>
         </form>
 
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-6">
+          <label className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Switch checked={includeNews} onCheckedChange={setIncludeNews} />
+            {copy.includeNews}
+          </label>
+          <label className="flex items-center gap-2 text-sm text-muted-foreground">
+            <Switch checked={includeSummary} onCheckedChange={setIncludeSummary} />
+            {copy.includeSummary}
+          </label>
+        </div>
+
         {message ? <p className="text-sm text-muted-foreground">{message}</p> : null}
 
         {isLoading ? (
@@ -230,7 +292,25 @@ export default function SemanticSearch() {
                     <h4 className="mt-1 text-lg font-semibold">
                       {result.title ?? copy.untitled}
                     </h4>
-                    <p className="mt-1 text-sm text-muted-foreground">{result.content}</p>
+                    <p className="mt-1 text-sm text-muted-foreground whitespace-pre-wrap">
+                      {expandedIds.has(result.id) ? fullContentById[result.id] || result.content : result.content}
+                    </p>
+                    <div className="mt-2">
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => toggleDocument(result.id)}
+                        disabled={loadingDocIds.has(result.id)}
+                        className="px-2"
+                      >
+                        {loadingDocIds.has(result.id)
+                          ? copy.loading
+                          : expandedIds.has(result.id)
+                            ? copy.showLess
+                            : copy.readMore}
+                      </Button>
+                    </div>
                   </div>
                 ))}
               </div>
