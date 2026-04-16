@@ -34,7 +34,7 @@ async function fetchLatestNews(query: string): Promise<NewsResult[]> {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         api_key: tavilyApiKey,
-        query: `${query} latest news 2026`,
+        query: `${query} latest news`,
         include_answer: true,
         max_results: 5,
         include_raw_content: false,
@@ -89,6 +89,13 @@ async function synthesizeResults(
       baseURL: baseURL,
     });
 
+    const summaryModelCandidates = [
+      process.env.OPENAI_SUMMARY_MODEL,
+      "gpt-4o-mini",
+      "gpt-4.1-mini",
+      "gpt-4-turbo",
+    ].filter((model): model is string => Boolean(model && model.trim()));
+
     const internalContext =
       internalResults.length > 0
         ? `Internal Documentation:\n${internalResults
@@ -110,14 +117,23 @@ Use the language of the query (Myanmar or English).`;
 
     const userPrompt = `Query: "${query}"\n\n${internalContext}\n\n${newsContext}\n\nPlease provide a comprehensive summary combining both sources.`;
 
-    const { text } = await generateText({
-      model: openaiInstance("gpt-4-turbo"),
-      system: systemPrompt,
-      prompt: userPrompt,
-      temperature: 0.7,
-    });
+    let lastError: unknown = null;
+    for (const modelName of summaryModelCandidates) {
+      try {
+        const { text } = await generateText({
+          model: openaiInstance(modelName),
+          system: systemPrompt,
+          prompt: userPrompt,
+          temperature: 0.7,
+        });
+        return text;
+      } catch (error) {
+        lastError = error;
+      }
+    }
 
-    return text;
+    console.warn("Failed to synthesize results with all candidate models:", lastError);
+    return "Unable to synthesize results at this time.";
   } catch (error) {
     console.warn("Failed to synthesize results:", error);
     return "Unable to synthesize results at this time.";
