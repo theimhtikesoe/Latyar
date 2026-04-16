@@ -163,7 +163,14 @@ async function fetchLexicalFallback(query: string, limit: number): Promise<Seman
     throw new Error(`Supabase fallback search failed: ${error.message}`);
   }
 
-  return (data ?? [])
+  const rows = (data ?? []) as Array<{
+    id: unknown;
+    title: unknown;
+    content: unknown;
+    metadata: unknown;
+  }>;
+
+  return rows
     .map((row) => {
       const content = typeof row.content === "string" ? row.content : "";
       if (!content) {
