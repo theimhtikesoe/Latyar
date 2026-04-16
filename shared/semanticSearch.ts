@@ -4,11 +4,8 @@ import { createClient } from "@supabase/supabase-js";
 
 const DEFAULT_LIMIT = 5;
 const MAX_LIMIT = 20;
-const FETCH_LIMIT = 200;
+const DEFAULT_SCAN_LIMIT = 2000;
 const DEFAULT_THRESHOLD = 0.1; // Lowered threshold for better recall in semantic search
-
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "";
-const SUPABASE_SERVICE_ROLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY || "";
 
 export type SemanticSearchResult = {
   id: string;
@@ -47,6 +44,15 @@ function normalizeLimit(limit?: number): number {
   }
 
   return Math.max(1, Math.min(MAX_LIMIT, Math.floor(limit as number)));
+}
+
+function normalizeScanLimit(value: unknown): number {
+  const parsed = typeof value === "string" ? Number(value) : value;
+  if (!Number.isFinite(parsed)) {
+    return DEFAULT_SCAN_LIMIT;
+  }
+
+  return Math.max(100, Math.min(20_000, Math.floor(parsed as number)));
 }
 
 function normalizeEmbedding(value: DocumentsRow["embedding"]): number[] | null {
@@ -102,11 +108,17 @@ function toContentPreview(content: string): string {
 }
 
 function createSupabaseClient() {
-  const supabaseUrl = SUPABASE_URL;
-  const supabaseKey = SUPABASE_SERVICE_ROLE_KEY;
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "";
+  const supabaseKey =
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_ANON_KEY ||
+    "";
 
   if (!supabaseUrl || !supabaseKey) {
-    throw new Error("Missing SUPABASE_URL or SUPABASE_SERVICE_ROLE_KEY");
+    throw new Error(
+      "Missing Supabase credentials. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY (or SUPABASE_ANON_KEY)."
+    );
   }
 
   return createClient(supabaseUrl, supabaseKey, {
@@ -122,6 +134,7 @@ async function createQueryEmbedding(query: string, apiKey?: string): Promise<num
   }
 
   const baseURL = process.env.OPENAI_BASE_URL || "https://api.openai.com/v1";
+  const embeddingModel = process.env.OPENAI_EMBEDDING_MODEL || "text-embedding-3-small";
   
   const openaiInstance = createOpenAI({ 
     apiKey: effectiveApiKey,
@@ -129,7 +142,7 @@ async function createQueryEmbedding(query: string, apiKey?: string): Promise<num
   });
 
   const { embedding } = await embed({
-    model: openaiInstance.embedding("text-embedding-3-small"),
+    model: openaiInstance.embedding(embeddingModel),
     value: query,
   });
 
@@ -138,10 +151,12 @@ async function createQueryEmbedding(query: string, apiKey?: string): Promise<num
 
 async function fetchLexicalFallback(query: string, limit: number): Promise<SemanticSearchResult[]> {
   const supabase = createSupabaseClient();
+  const escaped = query.replace(/[%_]/g, (match) => `\\${match}`);
+  const pattern = `%${escaped}%`;
   const { data, error } = await supabase
     .from("documents")
     .select("id, title, content, metadata")
-    .ilike("content", `%${query}%`)
+    .or(`content.ilike.${pattern},title.ilike.${pattern}`)
     .limit(limit);
 
   if (error) {
@@ -180,6 +195,7 @@ export async function semanticSearchDocuments(
 
   const limit = normalizeLimit(options?.limit);
   const threshold = Number(process.env.SEMANTIC_SEARCH_THRESHOLD ?? DEFAULT_THRESHOLD);
+  const scanLimit = normalizeScanLimit(process.env.SEMANTIC_SEARCH_SCAN_LIMIT);
   
   let supabase;
   try {
@@ -213,7 +229,7 @@ export async function semanticSearchDocuments(
   const { data: rpcData, error: rpcError } = await supabase.rpc('match_documents', {
     query_embedding: embedding,
     match_threshold: threshold,
-    match_count: limit * 2 // Fetch more to allow for better filtering/ranking
+    match_count: Math.max(limit * 6, 20) // Fetch more to allow for better filtering/ranking
   });
 
   let semanticResults: SemanticSearchResult[] = [];
@@ -225,6 +241,9 @@ export async function semanticSearchDocuments(
       metadata: row.metadata,
       score: Number(row.similarity.toFixed(4)),
     }));
+  } else if (rpcError) {
+    const details = typeof (rpcError as any)?.message === "string" ? (rpcError as any).message : String(rpcError);
+    console.warn("Vector RPC search failed:", details);
   }
 
   // Fetch lexical results for hybrid search
@@ -257,7 +276,19 @@ export async function semanticSearchDocuments(
     .slice(0, limit);
 
   if (finalResults.length > 0) {
-    return { results: finalResults };
+    const messageParts: string[] = [];
+    if (rpcError) {
+      const rpcMessage = typeof (rpcError as any)?.message === "string" ? (rpcError as any).message : "";
+      if (rpcMessage.toLowerCase().includes("match_documents")) {
+        messageParts.push(
+          "Vector search function (match_documents) is not available. Using fallback search."
+        );
+      } else {
+        messageParts.push("Vector search unavailable. Using fallback search.");
+      }
+    }
+
+    return { results: finalResults, message: messageParts.length > 0 ? messageParts.join(" ") : undefined };
   }
 
   // Fallback to manual similarity calculation if RPC fails or returns no results
@@ -265,11 +296,13 @@ export async function semanticSearchDocuments(
   const { data, error } = await supabase
     .from("documents")
     .select("id, title, content, metadata, embedding")
-    .limit(FETCH_LIMIT);
+    .limit(scanLimit);
 
   if (error) {
     throw new Error(`Supabase documents lookup failed: ${error.message}`);
   }
+
+  let dimensionMismatchCount = 0;
 
   const scoredResults = ((data ?? []) as DocumentsRow[])
     .map((row) => {
@@ -277,6 +310,11 @@ export async function semanticSearchDocuments(
       const rowEmbedding = normalizeEmbedding(row.embedding);
 
       if (!content || !rowEmbedding) {
+        return null;
+      }
+
+      if (rowEmbedding.length !== embedding.length) {
+        dimensionMismatchCount += 1;
         return null;
       }
 
@@ -299,6 +337,14 @@ export async function semanticSearchDocuments(
 
   if (scoredResults.length > 0) {
     return { results: scoredResults };
+  }
+
+  if (dimensionMismatchCount > 0) {
+    return {
+      results: [],
+      message:
+        "Your stored document embeddings do not match the current query embedding dimension. Recreate document embeddings using the same embedding model configured by OPENAI_EMBEDDING_MODEL (default: text-embedding-3-small) and ensure match_documents uses the correct vector dimension.",
+    };
   }
 
   // Final fallback to lexical search

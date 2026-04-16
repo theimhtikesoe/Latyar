@@ -3,8 +3,9 @@ import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import fs from "node:fs";
 import path from "node:path";
-import { defineConfig, type Plugin, type ViteDevServer } from "vite";
+import { defineConfig, loadEnv, type Plugin, type ViteDevServer } from "vite";
 import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
+import { performHybridSearch } from "./shared/hybridSearch";
 
 // =============================================================================
 // Manus Debug Collector - Vite Plugin
@@ -170,46 +171,115 @@ function vitePluginManusDebugCollector(): Plugin {
   };
 }
 
+function vitePluginLocalSearchApi(): Plugin {
+  return {
+    name: "local-search-api",
+    apply: "serve",
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use("/api/search", (req, res, next) => {
+        if (req.method !== "POST") {
+          res.writeHead(405, {
+            "Content-Type": "application/json",
+            Allow: "POST",
+          });
+          res.end(
+            JSON.stringify({
+              internalResults: [],
+              newsResults: [],
+              synthesizedSummary: "",
+              message: "Method not allowed. Use POST.",
+            })
+          );
+          return;
+        }
+
+        let body = "";
+        req.on("data", (chunk) => {
+          body += chunk.toString();
+        });
+
+        req.on("end", async () => {
+          try {
+            const payload = JSON.parse(body || "{}") as {
+              query?: unknown;
+              limit?: unknown;
+              apiKey?: unknown;
+            };
+
+            const query = typeof payload.query === "string" ? payload.query : "";
+            const limit = typeof payload.limit === "number" ? payload.limit : undefined;
+            const apiKey = typeof payload.apiKey === "string" ? payload.apiKey : undefined;
+
+            const result = await performHybridSearch(query, { limit, apiKey });
+            const status = query.trim() ? 200 : 400;
+            res.writeHead(status, { "Content-Type": "application/json" });
+            res.end(JSON.stringify(result));
+          } catch (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(
+              JSON.stringify({
+                internalResults: [],
+                newsResults: [],
+                synthesizedSummary: "",
+                message: error instanceof Error ? error.message : "Unexpected search error.",
+              })
+            );
+          }
+        });
+      });
+    },
+  };
+}
+
 const plugins = [
   react(),
   tailwindcss(),
   jsxLocPlugin(),
   vitePluginManusRuntime(),
   vitePluginAnalytics(),
+  vitePluginLocalSearchApi(),
   vitePluginManusDebugCollector(),
 ];
 
-export default defineConfig({
-  plugins,
-  resolve: {
-    alias: {
-      "@": path.resolve(import.meta.dirname, "client", "src"),
-      "@shared": path.resolve(import.meta.dirname, "shared"),
-      "@assets": path.resolve(import.meta.dirname, "attached_assets"),
+export default defineConfig(({ mode }) => {
+  // Ensure Node-side code (dev middleware, server build) can read .env values via process.env
+  const loaded = loadEnv(mode, path.resolve(import.meta.dirname), "");
+  for (const [key, value] of Object.entries(loaded)) {
+    process.env[key] = value;
+  }
+
+  return {
+    plugins,
+    resolve: {
+      alias: {
+        "@": path.resolve(import.meta.dirname, "client", "src"),
+        "@shared": path.resolve(import.meta.dirname, "shared"),
+        "@assets": path.resolve(import.meta.dirname, "attached_assets"),
+      },
     },
-  },
-  envDir: path.resolve(import.meta.dirname),
-  root: path.resolve(import.meta.dirname, "client"),
-  build: {
-    outDir: path.resolve(import.meta.dirname, "dist/public"),
-    emptyOutDir: true,
-  },
-  server: {
-    port: 3000,
-    strictPort: false, // Will find next available port if 3000 is busy
-    host: true,
-    allowedHosts: [
-      ".manuspre.computer",
-      ".manus.computer",
-      ".manus-asia.computer",
-      ".manuscomputer.ai",
-      ".manusvm.computer",
-      "localhost",
-      "127.0.0.1",
-    ],
-    fs: {
-      strict: true,
-      deny: ["**/.*"],
+    envDir: path.resolve(import.meta.dirname),
+    root: path.resolve(import.meta.dirname, "client"),
+    build: {
+      outDir: path.resolve(import.meta.dirname, "dist/public"),
+      emptyOutDir: true,
     },
-  },
+    server: {
+      port: 3000,
+      strictPort: false, // Will find next available port if 3000 is busy
+      host: true,
+      allowedHosts: [
+        ".manuspre.computer",
+        ".manus.computer",
+        ".manus-asia.computer",
+        ".manuscomputer.ai",
+        ".manusvm.computer",
+        "localhost",
+        "127.0.0.1",
+      ],
+      fs: {
+        strict: true,
+        deny: ["**/.*"],
+      },
+    },
+  };
 });
