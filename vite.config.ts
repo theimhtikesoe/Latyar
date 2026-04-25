@@ -1,4 +1,3 @@
-import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import fs from "node:fs";
@@ -6,6 +5,12 @@ import path from "node:path";
 import { defineConfig, loadEnv, type Plugin, type ViteDevServer } from "vite";
 import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
 import { performHybridSearch } from "./shared/hybridSearch";
+import {
+  knowledgeRequestSchema,
+  listKnowledgeEntries,
+  previewKnowledgeEntry,
+  saveKnowledgeEntry,
+} from "./shared/knowledge";
 
 // =============================================================================
 // Manus Debug Collector - Vite Plugin
@@ -237,13 +242,79 @@ function vitePluginLocalSearchApi(): Plugin {
   };
 }
 
+function vitePluginLocalKnowledgeApi(): Plugin {
+  return {
+    name: "local-knowledge-api",
+    apply: "serve",
+    configureServer(server: ViteDevServer) {
+      server.middlewares.use("/api/knowledge", (req, res, next) => {
+        if (req.method === "GET") {
+          listKnowledgeEntries()
+            .then((knowledge) => {
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ knowledge }));
+            })
+            .catch((error) => {
+              res.writeHead(500, { "Content-Type": "application/json" });
+              res.end(
+                JSON.stringify({
+                  knowledge: [],
+                  message: error instanceof Error ? error.message : "Failed to load knowledge entries.",
+                })
+              );
+            });
+          return;
+        }
+
+        if (req.method !== "POST") {
+          return next();
+        }
+
+        let body = "";
+        req.on("data", (chunk) => {
+          body += chunk.toString();
+        });
+
+        req.on("end", async () => {
+          try {
+            const parsed = knowledgeRequestSchema.safeParse(JSON.parse(body || "{}"));
+            if (!parsed.success) {
+              res.writeHead(400, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ message: "Invalid request body." }));
+              return;
+            }
+
+            if (parsed.data.mode === "preview") {
+              const preview = await previewKnowledgeEntry(parsed.data.content, parsed.data.language);
+              res.writeHead(200, { "Content-Type": "application/json" });
+              res.end(JSON.stringify({ preview }));
+              return;
+            }
+
+            const knowledge = await saveKnowledgeEntry(parsed.data.content, parsed.data.language);
+            res.writeHead(200, { "Content-Type": "application/json" });
+            res.end(JSON.stringify({ knowledge }));
+          } catch (error) {
+            res.writeHead(500, { "Content-Type": "application/json" });
+            res.end(
+              JSON.stringify({
+                message: error instanceof Error ? error.message : "Knowledge update failed.",
+              })
+            );
+          }
+        });
+      });
+    },
+  };
+}
+
 const plugins = [
   react(),
   tailwindcss(),
-  jsxLocPlugin(),
   vitePluginManusRuntime(),
   vitePluginAnalytics(),
   vitePluginLocalSearchApi(),
+  vitePluginLocalKnowledgeApi(),
   vitePluginManusDebugCollector(),
 ];
 

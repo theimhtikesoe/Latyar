@@ -1,8 +1,9 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, BookOpen, Briefcase, Globe, TrendingUp, Zap, Map } from "lucide-react";
+import { ArrowRight, BookOpen, Briefcase, Globe, TrendingUp, Zap, Map, LibraryBig } from "lucide-react";
 import { useLocation } from "wouter";
 import SemanticSearch from "@/components/SemanticSearch";
+import CustomsValuationGuide from "@/components/CustomsValuationGuide";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 export default function Home() {
@@ -47,6 +48,13 @@ export default function Home() {
       href: "/geopolitics",
     },
     {
+      id: "knowledge-dashboard",
+      icon: LibraryBig,
+      label: isMyanmar ? "Knowledge Dashboard" : "Knowledge Dashboard",
+      description: isMyanmar ? "AI summary နဲ့ knowledge update" : "AI summaries and knowledge updates",
+      href: "/knowledge-dashboard",
+    },
+    {
       id: "sample-projects",
       icon: Map,
       label: isMyanmar ? "နမူနာစီမံကိန်းများ" : "Sample Projects",
@@ -67,7 +75,7 @@ export default function Home() {
       : "No fluff. Only real strategy and execution.",
     exploreBtn: isMyanmar ? "ကဏ္ဍများကို လေ့လာရန်" : "Explore Modules",
     learnBtn: isMyanmar ? "ပိုမိုလေ့လာရန်" : "Learn More",
-    modulesTitle: isMyanmar ? "ကုန်သွယ်မှုကျွမ်းကျင်မှု၏ အဓိကမဏ္ဍိုင် (၆) ရပ်" : "Six Pillars of Trade Mastery",
+    modulesTitle: isMyanmar ? "ကုန်သွယ်မှုကျွမ်းကျင်မှု၏ အဓိကမဏ္ဍိုင် (၇) ရပ်" : "Seven Pillars of Trade Mastery",
     modulesDesc: isMyanmar
       ? "နိုင်ငံတကာကုန်သွယ်မှုနှင့် ကုန်စည်ပို့ဆောင်ရေး နယ်ပယ်တစ်ခုလုံးကို ကျွမ်းကျင်စွာ လျှောက်လှမ်းပါ"
       : "Master the full international trade and logistics landscape.",
@@ -203,6 +211,8 @@ export default function Home() {
           <SemanticSearch />
         </div>
       </section>
+
+      <CustomsValuationGuide />
 
       <section className="section-padding bg-card/50">
         <div className="container">

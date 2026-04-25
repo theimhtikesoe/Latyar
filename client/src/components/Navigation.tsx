@@ -11,6 +11,7 @@ import {
   Zap,
   Globe,
   Map,
+  LibraryBig,
   Menu,
   X,
   Languages,
@@ -64,6 +65,12 @@ export default function Navigation() {
       icon: Globe,
       label: isMyanmar ? "ပထဝီနိုင်ငံရေး" : "Geopolitics",
       href: "/geopolitics",
+    },
+    {
+      id: "knowledge-dashboard",
+      icon: LibraryBig,
+      label: isMyanmar ? "Knowledge Dashboard" : "Knowledge Dashboard",
+      href: "/knowledge-dashboard",
     },
     {
       id: "sample-projects",

@@ -14,6 +14,7 @@ import MarketPulse from "./pages/MarketPulse";
 import TradeMastery from "./pages/TradeMastery";
 import Geopolitics from "./pages/Geopolitics";
 import SampleProjects from "./pages/SampleProjects";
+import KnowledgeDashboard from "./pages/KnowledgeDashboard";
 
 function Router() {
   return (
@@ -25,6 +26,7 @@ function Router() {
       <Route path={"/trade-mastery"} component={TradeMastery} />
       <Route path={"/geopolitics"} component={Geopolitics} />
       <Route path={"/sample-projects"} component={SampleProjects} />
+      <Route path={"/knowledge-dashboard"} component={KnowledgeDashboard} />
       <Route path={"/404"} component={NotFound} />
       {/* Final fallback route */}
       <Route component={NotFound} />
