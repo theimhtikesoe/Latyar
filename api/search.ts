@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { performHybridSearch } from "./_search/hybridSearch.js";
+import { performHybridSearch } from "../shared/hybridSearch.js";
 
 type SearchRequestBody = {
   query?: unknown;

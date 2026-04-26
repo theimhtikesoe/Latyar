@@ -55,7 +55,11 @@ function getSupabaseClient() {
     "";
 
   if (!supabaseUrl || !supabaseKey) {
-    throw new Error("Missing Supabase credentials. Set SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY.");
+    console.warn("Supabase credentials missing. Returning a mock client or throwing if used in production.");
+    // We throw only if we actually try to use it and it's missing, but for the check, 
+    // we want to be more descriptive about WHICH one is missing.
+    if (!supabaseUrl) throw new Error("Missing SUPABASE_URL environment variable.");
+    if (!supabaseKey) throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY environment variable.");
   }
 
   return createClient(supabaseUrl, supabaseKey, {

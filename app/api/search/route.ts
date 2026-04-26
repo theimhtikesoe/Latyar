@@ -1,4 +1,4 @@
-import { performHybridSearch } from "../../../shared/hybridSearch";
+import { performHybridSearch } from "../../../shared/hybridSearch.js";
 
 type SearchRequestBody = {
   query?: unknown;

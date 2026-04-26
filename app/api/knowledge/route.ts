@@ -3,7 +3,7 @@ import {
   listKnowledgeEntries,
   previewKnowledgeEntry,
   saveKnowledgeEntry,
-} from "../../../../shared/knowledge";
+} from "../../../../shared/knowledge.js";
 
 export async function GET(): Promise<Response> {
   try {
