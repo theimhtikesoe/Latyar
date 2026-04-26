@@ -231,10 +231,19 @@ export async function saveKnowledgeEntry(
   apiKey?: string
 ): Promise<KnowledgeCard> {
   const normalized = normalizeContent(content);
-  const [draft, embedding] = await Promise.all([
-    generateKnowledgeDraft(normalized, language, apiKey),
-    createKnowledgeEmbedding(normalized, apiKey),
-  ]);
+  
+  // Attempt to generate draft and embedding
+  // If embedding fails (e.g. quota), we still want to save the text for keyword search
+  const draft = await generateKnowledgeDraft(normalized, language, apiKey);
+  
+  let embedding: number[] = [];
+  try {
+    embedding = await createKnowledgeEmbedding(normalized, apiKey);
+  } catch (error) {
+    console.error("Embedding generation failed, saving with empty embedding:", error);
+    // Create a zero vector of the expected dimension (1536 for text-embedding-3-small)
+    embedding = new Array(1536).fill(0);
+  }
 
   const saved = await insertKnowledgeDocument({
     title: draft.title,
@@ -246,6 +255,7 @@ export async function saveKnowledgeEntry(
       source: "knowledge-dashboard",
       language,
       updatedAt: new Date().toISOString(),
+      embedding_error: embedding.every(v => v === 0) ? "quota_exceeded" : undefined,
     },
   });
 
