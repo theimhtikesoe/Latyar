@@ -60,9 +60,6 @@ function getSupabaseClient() {
 
   return createClient(supabaseUrl, supabaseKey, {
     auth: { persistSession: false },
-    global: {
-      fetch: (...args) => fetch(...args),
-    },
   });
 }
 
@@ -183,7 +180,7 @@ async function insertKnowledgeDocument(input: DocumentInsert) {
       metadata: input.metadata,
       embedding: input.embedding,
     })
-    .select("id, title, content, metadata")
+    .select("id, title, content, metadata, created_at")
     .single();
 
   if (error) {
@@ -203,17 +200,14 @@ function mapDocumentToCard(row: {
   title: string | null;
   content: string | null;
   metadata: Record<string, unknown> | null;
+  created_at?: string | null;
 }): KnowledgeCard | null {
   const metadata = row.metadata ?? {};
   const summaryBullets = Array.isArray(metadata.summaryBullets)
     ? metadata.summaryBullets.filter((item): item is string => typeof item === "string")
     : [];
   const shortDescription = typeof metadata.shortDescription === "string" ? metadata.shortDescription : "";
-  const source = typeof metadata.source === "string" ? metadata.source : "";
 
-  // Allow both knowledge-dashboard and other sources to be listed if they have necessary fields
-  // But prioritize knowledge-dashboard entries for the dashboard view if needed
-  // For now, let's keep it flexible but ensure we have the required fields
   if (!row.title || !row.content) {
     return null;
   }
@@ -224,7 +218,7 @@ function mapDocumentToCard(row: {
     shortDescription,
     summaryBullets,
     content: row.content || "",
-    createdAt: null,
+    createdAt: row.created_at ?? null,
   };
 }
 
@@ -268,7 +262,7 @@ export async function saveKnowledgeEntry(
     shortDescription: draft.shortDescription,
     summaryBullets: draft.summaryBullets,
     content: saved.content || normalized,
-    createdAt: null,
+    createdAt: (saved as any).created_at ?? new Date().toISOString(),
   };
 }
 
@@ -291,7 +285,7 @@ export async function listKnowledgeEntries(limit = 12): Promise<KnowledgeCard[]>
   const supabase = getSupabaseClient();
   const { data, error } = await supabase
     .from("documents")
-    .select("id, title, content, metadata")
+    .select("id, title, content, metadata, created_at")
     .order("id", { ascending: false })
     .limit(Math.max(1, Math.min(limit, 50)));
 
@@ -304,6 +298,7 @@ export async function listKnowledgeEntries(limit = 12): Promise<KnowledgeCard[]>
     title: string | null;
     content: string | null;
     metadata: Record<string, unknown> | null;
+    created_at?: string | null;
   }>)
     .map(mapDocumentToCard)
     .filter((item): item is KnowledgeCard => item !== null);

@@ -155,7 +155,12 @@ export default function KnowledgeInputDashboard() {
         const response = await fetch("/api/knowledge");
         if (!response.ok) {
           const payload = (await response.json()) as { message?: string };
-          setMessage(payload.message ?? `Error ${response.status}: ${response.statusText}`);
+          const errorMsg = payload.message ?? `Error ${response.status}: ${response.statusText}`;
+          setMessage(
+            isMyanmar 
+              ? `ဒေတာရယူရာတွင် အမှားရှိနေပါသည်: ${errorMsg}` 
+              : `Failed to load entries: ${errorMsg}`
+          );
           return;
         }
         const payload = (await response.json()) as { knowledge?: KnowledgeCard[] };
