@@ -263,19 +263,42 @@ export default function KnowledgeInputDashboard() {
       if (typeof fetch === 'undefined') {
         throw new Error("Browser fetch API is not available.");
       }
-      const response = await fetch("/api/knowledge", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mode: "save",
-          content: trimmed,
-          language,
-        }),
-      });
+      let response: Response;
+      try {
+        response = await fetch("/api/knowledge", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            mode: "save",
+            content: trimmed,
+            language,
+          }),
+        });
+      } catch (fetchErr) {
+        console.error("Network/Fetch error:", fetchErr);
+        setMessage(
+          isMyanmar 
+            ? `Network Error: ဆာဗာသို့ ချိတ်ဆက်၍မရပါ။ အင်တာနက် သို့မဟုတ် API endpoint ကို စစ်ဆေးပါ။ (${fetchErr instanceof Error ? fetchErr.message : 'Unknown error'})`
+            : `Network Error: Could not connect to the server. Please check your connection or API endpoint. (${fetchErr instanceof Error ? fetchErr.message : 'Unknown error'})`
+        );
+        return;
+      }
 
-      const payload = (await response.json()) as { knowledge?: KnowledgeCard; message?: string };
+      let payload: { knowledge?: KnowledgeCard; message?: string };
+      try {
+        payload = await response.json();
+      } catch (jsonErr) {
+        console.error("JSON parse error:", jsonErr);
+        setMessage(
+          isMyanmar
+            ? `Server Error: ဆာဗာမှ ပြန်ကြားချက်ကို ဖတ်၍မရပါ။ (${response.status} ${response.statusText})`
+            : `Server Error: Could not parse server response. (${response.status} ${response.statusText})`
+        );
+        return;
+      }
+
       if (!response.ok || !payload.knowledge) {
-        setMessage(payload.message ?? null);
+        setMessage(payload.message ?? (isMyanmar ? "အမည်မသိ အမှားတစ်ခု ဖြစ်ပွားခဲ့သည်။" : "An unknown error occurred."));
         return;
       }
 

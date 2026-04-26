@@ -126,8 +126,8 @@ export async function generateKnowledgeDraft(
       temperature: 0.4,
       system:
         language === "my"
-          ? "You are an expert knowledge curator for a Myanmar trade intelligence platform. Your goal is to extract EVERY important detail, regulation, and procedural step from the source text. Do not provide a brief overview; provide a deep, technical, and comprehensive summary in Myanmar."
-          : "You are an expert knowledge curator for a trade intelligence platform. Your goal is to extract EVERY important detail, regulation, and procedural step from the source text. Do not provide a brief overview; provide a deep, technical, and comprehensive summary in English.",
+          ? "You are an expert knowledge curator for a Myanmar trade intelligence platform. Your goal is to extract EVERY important detail, regulation, and procedural step from the source text. Do not provide a brief overview; provide a deep, technical, and comprehensive summary in Myanmar. Ensure you provide at least 7-10 detailed bullets."
+          : "You are an expert knowledge curator for a trade intelligence platform. Your goal is to extract EVERY important detail, regulation, and procedural step from the source text. Do not provide a brief overview; provide a deep, technical, and comprehensive summary in English. Ensure you provide at least 7-10 detailed bullets.",
       prompt:
         language === "my"
           ? `အောက်ပါ စာသားမှ အရေးကြီးသောအချက်အလက်များ အားလုံးကို အသေးစိတ်ထုတ်ယူပြီး JSON format ဖြင့် ပြန်ပေးပါ။
@@ -135,8 +135,8 @@ export async function generateKnowledgeDraft(
 Requirements:
 - title: စာသား၏ အကြောင်းအရာကို တိကျစွာ ဖော်ပြသော ခေါင်းစဉ်
 - shortDescription: စာသားတစ်ခုလုံး၏ အနှစ်ချုပ်ကို ဖော်ပြသော ပြည့်စုံသည့် အပိုဒ် (အနည်းဆုံး စာလုံးရေ ၅၀)
-- summaryBullets: အရေးကြီးသော အချက်အလက်များ၊ ကိန်းဂဏန်းများ၊ လုပ်ထုံးလုပ်နည်းများနှင့် စည်းမျဉ်းများ အားလုံးကို တစ်ခုချင်းစီ အသေးစိတ် ရေးသားထားသော list (အနည်းဆုံး ၅ ခုမှ ၁၅ ခုအထိ)
-- **အရေးကြီးသည်**: မူရင်းစာသားထဲရှိ အချက်အလက်များ တစ်ခုမှ မကျန်စေဘဲ အသေးစိတ် ရေးသားပေးရန် လိုအပ်သည်။
+- summaryBullets: အရေးကြီးသော အချက်အလက်များ၊ ကိန်းဂဏန်းများ၊ လုပ်ထုံးလုပ်နည်းများနှင့် စည်းမျဉ်းများ အားလုံးကို တစ်ခုချင်းစီ အသေးစိတ် ရေးသားထားသော list (အနည်းဆုံး ၇ ခုမှ ၁၅ ခုအထိ)
+- **အရေးကြီးသည်**: မူရင်းစာသားထဲရှိ အချက်အလက်များ တစ်ခုမှ မကျန်စေဘဲ အသေးစိတ် ရေးသားပေးရန် လိုအပ်သည်။ အချက်အလက်နည်းပါးပါကလည်း ရှိသမျှအချက်အလက်များကို ခွဲခြား၍ အနည်းဆုံး bullet ၇ ခု ရအောင် ရေးသားပါ။
 - Myanmar language ဖြင့်သာ ရေးသားပါ။
 
 Text:
@@ -146,8 +146,8 @@ ${normalized}`
 Requirements:
 - title: A precise and informative title for the content.
 - shortDescription: A comprehensive paragraph summarizing the entire text (at least 50 words).
-- summaryBullets: A detailed list of ALL key facts, numbers, procedures, and regulations found in the text (provide between 5 to 15 detailed bullets).
-- **CRITICAL**: Do not omit any technical details or important facts. The goal is a complete extraction, not a high-level summary.
+- summaryBullets: A detailed list of ALL key facts, numbers, procedures, and regulations found in the text (provide between 7 to 15 detailed bullets).
+- **CRITICAL**: Do not omit any technical details or important facts. The goal is a complete extraction, not a high-level summary. Even for shorter texts, break down the information into at least 7 distinct, meaningful bullets.
 - Write in English.
 
 Text:
