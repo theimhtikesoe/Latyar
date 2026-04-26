@@ -4,9 +4,9 @@ import { embed, generateObject } from "ai";
 import { z } from "zod";
 
 const knowledgeDraftSchema = z.object({
-  title: z.string().min(6).max(120),
-  shortDescription: z.string().min(12).max(220),
-  summaryBullets: z.array(z.string().min(8).max(280)).min(3).max(6),
+  title: z.string().min(6).max(200),
+  shortDescription: z.string().min(12).max(500),
+  summaryBullets: z.array(z.string().min(8).max(1000)).min(3).max(10),
 });
 
 const previewRequestSchema = z.object({
@@ -122,17 +122,17 @@ export async function generateKnowledgeDraft(
       temperature: 0.4,
       system:
         language === "my"
-          ? "You are an expert knowledge curator for a Myanmar trade intelligence platform. Produce concise, professional Myanmar copy. Return only facts grounded in the provided text."
-          : "You are an expert knowledge curator for a trade intelligence platform. Produce concise, professional English copy. Return only facts grounded in the provided text.",
+          ? "You are an expert knowledge curator for a Myanmar trade intelligence platform. Produce comprehensive, professional Myanmar copy. Ensure the summary captures all key technical details, regulations, and procedural steps mentioned in the text."
+          : "You are an expert knowledge curator for a trade intelligence platform. Produce comprehensive, professional English copy. Ensure the summary captures all key technical details, regulations, and procedural steps mentioned in the text.",
       prompt:
         language === "my"
           ? `အောက်ပါ စာသားကို knowledge base ထဲထည့်သွင်းရန် အတွက် JSON field ၃ ခု ထုတ်ပေးပါ။
 
 Requirements:
-- title ကို catchy ဖြစ်အောင် ရေးပါ
-- shortDescription ကို 1 sentence ပဲ ရေးပါ
-- summaryBullets ကို 3 to 6 bullet points အဖြစ် ရေးပါ
-- မူရင်းစာသားထဲမပါတဲ့ အချက်အလက် မထည့်ပါ
+- title ကို အချက်အလက်စုံလင်ပြီး စိတ်ဝင်စားစရာကောင်းအောင် ရေးပါ
+- shortDescription ကို စာသားတစ်ခုလုံး၏ အနှစ်ချုပ်ကို ဖော်ပြသော ဝါကျအဖြစ် ရေးပါ
+- summaryBullets ကို အရေးကြီးသော အချက်အလက်များ၊ လုပ်ထုံးလုပ်နည်းများနှင့် စည်းမျဉ်းများအားလုံး ပါဝင်စေရန် ၄ ခုမှ ၈ ခုအထိ အသေးစိတ် ရေးပါ
+- မူရင်းစာသားထဲပါဝင်သော အရေးကြီးသည့် အချက်အလက်များ မကျန်ရှိစေရ
 - Myanmar language ဖြင့် ရေးပါ
 
 Text:
@@ -140,10 +140,10 @@ ${normalized}`
           : `Create three JSON fields for a knowledge-base entry from the text below.
 
 Requirements:
-- Make the title catchy but professional
-- Keep shortDescription to one sentence
-- Write 3 to 6 concise bullet points in summaryBullets
-- Do not invent facts not present in the source text
+- Make the title informative and professional
+- Keep shortDescription as a concise summary of the entire text
+- Write 4 to 8 detailed bullet points in summaryBullets, ensuring all key technical details, regulations, and steps are covered
+- Do not omit important facts present in the source text
 - Write in English
 
 Text:
@@ -208,7 +208,10 @@ function mapDocumentToCard(row: {
   const shortDescription = typeof metadata.shortDescription === "string" ? metadata.shortDescription : "";
   const source = typeof metadata.source === "string" ? metadata.source : "";
 
-  if (source !== "knowledge-dashboard") {
+  // Allow both knowledge-dashboard and other sources to be listed if they have necessary fields
+  // But prioritize knowledge-dashboard entries for the dashboard view if needed
+  // For now, let's keep it flexible but ensure we have the required fields
+  if (!row.title || !row.content) {
     return null;
   }
 
@@ -276,6 +279,7 @@ export async function listKnowledgeEntries(limit = 12): Promise<KnowledgeCard[]>
   const { data, error } = await supabase
     .from("documents")
     .select("id, title, content, metadata")
+    .order("id", { ascending: false })
     .limit(Math.max(1, Math.min(limit, 50)));
 
   if (error) {
@@ -289,6 +293,5 @@ export async function listKnowledgeEntries(limit = 12): Promise<KnowledgeCard[]>
     metadata: Record<string, unknown> | null;
   }>)
     .map(mapDocumentToCard)
-    .filter((item): item is KnowledgeCard => item !== null)
-    .reverse();
+    .filter((item): item is KnowledgeCard => item !== null);
 }
