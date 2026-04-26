@@ -249,6 +249,9 @@ export default function KnowledgeInputDashboard() {
     setMessage(null);
 
     try {
+      if (typeof fetch === 'undefined') {
+        throw new Error("Browser fetch API is not available.");
+      }
       const response = await fetch("/api/knowledge", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -269,11 +272,14 @@ export default function KnowledgeInputDashboard() {
       setContent("");
       setPreview(null);
       setMessage(isMyanmar ? "Knowledge base ကို update လုပ်ပြီးပါပြီ။" : "Knowledge base updated successfully.");
-    } catch {
+    } catch (error) {
+      console.error("Save error:", error);
       setMessage(
-        isMyanmar
-          ? "Knowledge entry ကို မသိမ်းနိုင်ပါ။"
-          : "Could not save the knowledge entry."
+        error instanceof Error 
+          ? `Error: ${error.message}`
+          : isMyanmar
+            ? "Knowledge entry ကို မသိမ်းနိုင်ပါ။"
+            : "Could not save the knowledge entry."
       );
     } finally {
       setSaveLoading(false);

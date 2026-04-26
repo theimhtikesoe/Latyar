@@ -4,9 +4,9 @@ import { embed, generateObject } from "ai";
 import { z } from "zod";
 
 const knowledgeDraftSchema = z.object({
-  title: z.string().min(6).max(200),
-  shortDescription: z.string().min(12).max(500),
-  summaryBullets: z.array(z.string().min(8).max(1000)).min(3).max(10),
+  title: z.string().min(2).max(300),
+  shortDescription: z.string().min(5).max(1000),
+  summaryBullets: z.array(z.string().min(5).max(2000)).min(1).max(20),
 });
 
 const previewRequestSchema = z.object({
@@ -122,29 +122,29 @@ export async function generateKnowledgeDraft(
       temperature: 0.4,
       system:
         language === "my"
-          ? "You are an expert knowledge curator for a Myanmar trade intelligence platform. Produce comprehensive, professional Myanmar copy. Ensure the summary captures all key technical details, regulations, and procedural steps mentioned in the text."
-          : "You are an expert knowledge curator for a trade intelligence platform. Produce comprehensive, professional English copy. Ensure the summary captures all key technical details, regulations, and procedural steps mentioned in the text.",
+          ? "You are an expert knowledge curator for a Myanmar trade intelligence platform. Your goal is to extract EVERY important detail, regulation, and procedural step from the source text. Do not provide a brief overview; provide a deep, technical, and comprehensive summary in Myanmar."
+          : "You are an expert knowledge curator for a trade intelligence platform. Your goal is to extract EVERY important detail, regulation, and procedural step from the source text. Do not provide a brief overview; provide a deep, technical, and comprehensive summary in English.",
       prompt:
         language === "my"
-          ? `အောက်ပါ စာသားကို knowledge base ထဲထည့်သွင်းရန် အတွက် JSON field ၃ ခု ထုတ်ပေးပါ။
+          ? `အောက်ပါ စာသားမှ အရေးကြီးသောအချက်အလက်များ အားလုံးကို အသေးစိတ်ထုတ်ယူပြီး JSON format ဖြင့် ပြန်ပေးပါ။
 
 Requirements:
-- title ကို အချက်အလက်စုံလင်ပြီး စိတ်ဝင်စားစရာကောင်းအောင် ရေးပါ
-- shortDescription ကို စာသားတစ်ခုလုံး၏ အနှစ်ချုပ်ကို ဖော်ပြသော ဝါကျအဖြစ် ရေးပါ
-- summaryBullets ကို အရေးကြီးသော အချက်အလက်များ၊ လုပ်ထုံးလုပ်နည်းများနှင့် စည်းမျဉ်းများအားလုံး ပါဝင်စေရန် ၄ ခုမှ ၈ ခုအထိ အသေးစိတ် ရေးပါ
-- မူရင်းစာသားထဲပါဝင်သော အရေးကြီးသည့် အချက်အလက်များ မကျန်ရှိစေရ
-- Myanmar language ဖြင့် ရေးပါ
+- title: စာသား၏ အကြောင်းအရာကို တိကျစွာ ဖော်ပြသော ခေါင်းစဉ်
+- shortDescription: စာသားတစ်ခုလုံး၏ အနှစ်ချုပ်ကို ဖော်ပြသော ပြည့်စုံသည့် အပိုဒ် (အနည်းဆုံး စာလုံးရေ ၅၀)
+- summaryBullets: အရေးကြီးသော အချက်အလက်များ၊ ကိန်းဂဏန်းများ၊ လုပ်ထုံးလုပ်နည်းများနှင့် စည်းမျဉ်းများ အားလုံးကို တစ်ခုချင်းစီ အသေးစိတ် ရေးသားထားသော list (အနည်းဆုံး ၅ ခုမှ ၁၅ ခုအထိ)
+- **အရေးကြီးသည်**: မူရင်းစာသားထဲရှိ အချက်အလက်များ တစ်ခုမှ မကျန်စေဘဲ အသေးစိတ် ရေးသားပေးရန် လိုအပ်သည်။
+- Myanmar language ဖြင့်သာ ရေးသားပါ။
 
 Text:
 ${normalized}`
-          : `Create three JSON fields for a knowledge-base entry from the text below.
+          : `Extract ALL important details, technical specs, regulations, and procedural steps from the text below and return them in JSON format.
 
 Requirements:
-- Make the title informative and professional
-- Keep shortDescription as a concise summary of the entire text
-- Write 4 to 8 detailed bullet points in summaryBullets, ensuring all key technical details, regulations, and steps are covered
-- Do not omit important facts present in the source text
-- Write in English
+- title: A precise and informative title for the content.
+- shortDescription: A comprehensive paragraph summarizing the entire text (at least 50 words).
+- summaryBullets: A detailed list of ALL key facts, numbers, procedures, and regulations found in the text (provide between 5 to 15 detailed bullets).
+- **CRITICAL**: Do not omit any technical details or important facts. The goal is a complete extraction, not a high-level summary.
+- Write in English.
 
 Text:
 ${normalized}`,
