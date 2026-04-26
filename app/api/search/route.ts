@@ -58,7 +58,7 @@ export async function POST(request: Request): Promise<Response> {
         internalResults: [],
         newsResults: [],
         synthesizedSummary: "",
-        message: `Search failed: ${message}. Check your environment variables (OPENAI_API_KEY, SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, TAVILY_API_KEY).`,
+        message: `Search failed: ${message}. Check your environment variables (OPENAI_API_KEY, SUPABASE_URL, SUPABASE_KEY, TAVILY_API_KEY).`,
       },
       { status: 500 }
     );

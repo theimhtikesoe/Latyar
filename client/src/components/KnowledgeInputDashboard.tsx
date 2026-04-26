@@ -157,7 +157,7 @@ export default function KnowledgeInputDashboard() {
           const payload = (await response.json()) as { message?: string };
           const errorMsg = payload.message ?? `Error ${response.status}: ${response.statusText}`;
           setMessage(
-            isMyammer 
+            isMyanmar 
               ? `ဒေတာရယူရာတွင် အမှားရှိနေပါသည်: ${errorMsg}` 
               : `Failed to load entries: ${errorMsg}`
           );
@@ -170,7 +170,7 @@ export default function KnowledgeInputDashboard() {
         setMessage(
           error instanceof Error 
             ? `Load Error: ${error.message}`
-            : isMyammer
+            : isMyanmar
               ? "Knowledge entries ကို မရယူနိုင်ပါ။ API configuration ကို စစ်ဆေးပါ။"
               : "Could not load knowledge entries. Please check the API configuration."
         );
@@ -232,7 +232,7 @@ export default function KnowledgeInputDashboard() {
         setMessage(
           error instanceof Error
             ? `Preview Error: ${error.message}`
-            : isMyammer
+            : isMyanmar
               ? "AI preview မထုတ်နိုင်ပါ။"
               : "Could not generate AI preview."
         );

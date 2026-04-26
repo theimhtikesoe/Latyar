@@ -47,19 +47,22 @@ type DocumentInsert = {
 };
 
 function getSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "";
+  const supabaseUrl = process.env.SUPABASE_URL || process.env.NEXT_PUBLIC_SUPABASE_URL || "";
   const supabaseKey =
+    process.env.SUPABASE_KEY ||
     process.env.SUPABASE_SERVICE_ROLE_KEY ||
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
     process.env.SUPABASE_ANON_KEY ||
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
     "";
 
   if (!supabaseUrl || !supabaseKey) {
-    console.warn("Supabase credentials missing. Returning a mock client or throwing if used in production.");
-    // We throw only if we actually try to use it and it's missing, but for the check, 
-    // we want to be more descriptive about WHICH one is missing.
-    if (!supabaseUrl) throw new Error("Missing SUPABASE_URL environment variable.");
-    if (!supabaseKey) throw new Error("Missing SUPABASE_SERVICE_ROLE_KEY environment variable.");
+    const missing = [];
+    if (!supabaseUrl) missing.push("SUPABASE_URL");
+    if (!supabaseKey) missing.push("SUPABASE_KEY (or SUPABASE_ANON_KEY)");
+    
+    const errorMsg = `Missing Supabase configuration: ${missing.join(", ")}. Please check your environment variables.`;
+    console.error(errorMsg);
+    throw new Error(errorMsg);
   }
 
   return createClient(supabaseUrl, supabaseKey, {
