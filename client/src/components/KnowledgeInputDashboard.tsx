@@ -272,7 +272,7 @@ export default function KnowledgeInputDashboard() {
 
       let response: Response;
       try {
-        response = await fetch("/api/knowledge/ingest", {
+        response = await fetch("/api/knowledge", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -288,8 +288,8 @@ export default function KnowledgeInputDashboard() {
         const errorMsg = fetchErr instanceof Error ? fetchErr.message : 'Unknown error';
         setMessage(
           isMyanmar 
-            ? `Network Error: ဆာဗာသို့ ချိတ်ဆက်၍မရပါ။ အင်တာနက် သို့မဟုတ် API endpoint ကို စစ်ဆေးပါ။ (${errorMsg})`
-            : `Network Error: Could not connect to the server. Please check your connection or API endpoint. (${errorMsg})`
+            ? `Network Error: ဆာဗာသို့ ချိတ်ဆက်၍မရပါ။ API configuration (Supabase/OpenAI) ကို စစ်ဆေးပါ။ (${errorMsg})`
+            : `Network Error: Could not connect to the server. Please check your API configuration (Supabase/OpenAI). (${errorMsg})`
         );
         return;
       }
