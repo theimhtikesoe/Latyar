@@ -6,7 +6,7 @@ import { z } from "zod";
 const knowledgeDraftSchema = z.object({
   title: z.string().min(2).max(300),
   shortDescription: z.string().min(5).max(1000),
-  summaryBullets: z.array(z.string().min(5).max(2000)).min(1).max(20),
+  summaryBullets: z.array(z.string().min(5).max(2000)).min(7).max(50),
 });
 
 const previewRequestSchema = z.object({
@@ -108,7 +108,7 @@ function fallbackBullets(content: string) {
     .split(/\n+/)
     .map((line) => line.replace(/^[\s\-*•\d.)]+/, "").trim())
     .filter((line) => line.length > 12)
-    .slice(0, 4);
+    .slice(0, 20);
 }
 
 export async function generateKnowledgeDraft(
@@ -126,8 +126,8 @@ export async function generateKnowledgeDraft(
       temperature: 0.4,
       system:
         language === "my"
-          ? "You are an expert knowledge curator for a Myanmar trade intelligence platform. Your goal is to extract EVERY important detail, regulation, and procedural step from the source text. Do not provide a brief overview; provide a deep, technical, and comprehensive summary in Myanmar. Ensure you provide at least 7-10 detailed bullets."
-          : "You are an expert knowledge curator for a trade intelligence platform. Your goal is to extract EVERY important detail, regulation, and procedural step from the source text. Do not provide a brief overview; provide a deep, technical, and comprehensive summary in English. Ensure you provide at least 7-10 detailed bullets.",
+          ? "You are an expert knowledge curator for a Myanmar trade intelligence platform. Your goal is to extract EVERY important detail, regulation, and procedural step from the source text. CRITICAL: Extract ALL 12 product categories (Frozen Fish, Milk, Paper, etc.) with their corresponding HS codes and old/new tariff rates. Do not provide a brief overview; provide a deep, technical, and comprehensive summary in Myanmar. Ensure you provide at least 12-15 detailed bullets."
+          : "You are an expert knowledge curator for a trade intelligence platform. Your goal is to extract EVERY important detail, regulation, and procedural step from the source text. CRITICAL: Extract ALL 12 product categories (Frozen Fish, Milk, Paper, etc.) with their corresponding HS codes and old/new tariff rates. Do not provide a brief overview; provide a deep, technical, and comprehensive summary in English. Ensure you provide at least 12-15 detailed bullets.",
       prompt:
         language === "my"
           ? `အောက်ပါ စာသားမှ အရေးကြီးသောအချက်အလက်များ အားလုံးကို အသေးစိတ်ထုတ်ယူပြီး JSON format ဖြင့် ပြန်ပေးပါ။
@@ -135,8 +135,8 @@ export async function generateKnowledgeDraft(
 Requirements:
 - title: စာသား၏ အကြောင်းအရာကို တိကျစွာ ဖော်ပြသော ခေါင်းစဉ်
 - shortDescription: စာသားတစ်ခုလုံး၏ အနှစ်ချုပ်ကို ဖော်ပြသော ပြည့်စုံသည့် အပိုဒ် (အနည်းဆုံး စာလုံးရေ ၅၀)
-- summaryBullets: အရေးကြီးသော အချက်အလက်များ၊ ကိန်းဂဏန်းများ၊ လုပ်ထုံးလုပ်နည်းများနှင့် စည်းမျဉ်းများ အားလုံးကို တစ်ခုချင်းစီ အသေးစိတ် ရေးသားထားသော list (အနည်းဆုံး ၇ ခုမှ ၁၅ ခုအထိ)
-- **အရေးကြီးသည်**: မူရင်းစာသားထဲရှိ အချက်အလက်များ တစ်ခုမှ မကျန်စေဘဲ အသေးစိတ် ရေးသားပေးရန် လိုအပ်သည်။ အချက်အလက်နည်းပါးပါကလည်း ရှိသမျှအချက်အလက်များကို ခွဲခြား၍ အနည်းဆုံး bullet ၇ ခု ရအောင် ရေးသားပါ။
+- summaryBullets: အရေးကြီးသော အချက်အလက်များ၊ ကိန်းဂဏန်းများ၊ လုပ်ထုံးလုပ်နည်းများနှင့် စည်းမျဉ်းများ အားလုံးကို တစ်ခုချင်းစီ အသေးစိတ် ရေးသားထားသော list (အနည်းဆုံး ၁၂ ခုမှ ၅၀ ခုအထိ)
+- **အရေးကြီးသည်**: မူရင်းစာသားထဲရှိ အချက်အလက်များ တစ်ခုမှ မကျန်စေဘဲ အသေးစိတ် ရေးသားပေးရန် လိုအပ်သည်။ အထူးသဖြင့် ၁၂ ခုအမျိုးအစားတစ်ခုချင်းစီ၊ HS Code များ၊ အဆင့်မြှင့်တင်မှုခွင့်အဆင့်များ၊ ဟိုအခါနှင့် ယခုအခါ အခွန်နှုန်းများ အားလုံးကို သိမ်းဝင်စေပါ။
 - Myanmar language ဖြင့်သာ ရေးသားပါ။
 
 Text:
@@ -146,8 +146,8 @@ ${normalized}`
 Requirements:
 - title: A precise and informative title for the content.
 - shortDescription: A comprehensive paragraph summarizing the entire text (at least 50 words).
-- summaryBullets: A detailed list of ALL key facts, numbers, procedures, and regulations found in the text (provide between 7 to 15 detailed bullets).
-- **CRITICAL**: Do not omit any technical details or important facts. The goal is a complete extraction, not a high-level summary. Even for shorter texts, break down the information into at least 7 distinct, meaningful bullets.
+- summaryBullets: A detailed list of ALL key facts, numbers, procedures, and regulations found in the text (provide between 12 to 50 detailed bullets).
+- **CRITICAL**: Do not omit any technical details or important facts. The goal is a complete extraction, not a high-level summary. Specifically, extract each of the 12 product categories, their HS codes, preferential tariff levels, and old/new tariff rates. Include every detail mentioned.
 - Write in English.
 
 Text:
@@ -188,7 +188,14 @@ async function insertKnowledgeDocument(input: DocumentInsert) {
     .single();
 
   if (error) {
-    throw new Error(`Failed to save knowledge entry: ${error.message}`);
+    const errorDetails = {
+      code: (error as any).code || "UNKNOWN",
+      message: error.message,
+      details: (error as any).details || null,
+      hint: (error as any).hint || null,
+    };
+    console.error("Supabase insert error:", JSON.stringify(errorDetails, null, 2));
+    throw new Error(`Failed to save knowledge entry: [${errorDetails.code}] ${errorDetails.message}${errorDetails.hint ? " - " + errorDetails.hint : ""}`);
   }
 
   return data as {
@@ -246,13 +253,18 @@ export async function saveKnowledgeEntry(
     embedding = new Array(1536).fill(0);
   }
 
+  // Ensure summaryBullets is an array of strings
+  const summaryBulletsArray = Array.isArray(draft.summaryBullets)
+    ? draft.summaryBullets.filter((item): item is string => typeof item === "string")
+    : [];
+
   const saved = await insertKnowledgeDocument({
     title: draft.title,
     content: normalized,
     embedding,
     metadata: {
       shortDescription: draft.shortDescription,
-      summaryBullets: draft.summaryBullets,
+      summaryBullets: summaryBulletsArray,
       source: "knowledge-dashboard",
       language,
       updatedAt: new Date().toISOString(),
@@ -264,7 +276,7 @@ export async function saveKnowledgeEntry(
     id: String(saved.id),
     title: saved.title || draft.title,
     shortDescription: draft.shortDescription,
-    summaryBullets: draft.summaryBullets,
+    summaryBullets: summaryBulletsArray,
     content: saved.content || normalized,
     createdAt: (saved as any).created_at ?? new Date().toISOString(),
   };

@@ -157,7 +157,7 @@ export default function KnowledgeInputDashboard() {
           const payload = (await response.json()) as { message?: string };
           const errorMsg = payload.message ?? `Error ${response.status}: ${response.statusText}`;
           setMessage(
-            isMyanmar 
+            isMyammer 
               ? `ဒေတာရယူရာတွင် အမှားရှိနေပါသည်: ${errorMsg}` 
               : `Failed to load entries: ${errorMsg}`
           );
@@ -170,7 +170,7 @@ export default function KnowledgeInputDashboard() {
         setMessage(
           error instanceof Error 
             ? `Load Error: ${error.message}`
-            : isMyanmar
+            : isMyammer
               ? "Knowledge entries ကို မရယူနိုင်ပါ။ API configuration ကို စစ်ဆေးပါ။"
               : "Could not load knowledge entries. Please check the API configuration."
         );
@@ -232,7 +232,7 @@ export default function KnowledgeInputDashboard() {
         setMessage(
           error instanceof Error
             ? `Preview Error: ${error.message}`
-            : isMyanmar
+            : isMyammer
               ? "AI preview မထုတ်နိုင်ပါ။"
               : "Could not generate AI preview."
         );
@@ -263,9 +263,16 @@ export default function KnowledgeInputDashboard() {
       if (typeof fetch === 'undefined') {
         throw new Error("Browser fetch API is not available.");
       }
+
+      // Create an AbortController with 60-second timeout for large payloads
+      const controller = new AbortController();
+      const timeoutId = window.setTimeout(() => {
+        controller.abort();
+      }, 60000); // 60 seconds
+
       let response: Response;
       try {
-        response = await fetch("/api/knowledge", {
+        response = await fetch("/api/knowledge/ingest", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -273,16 +280,21 @@ export default function KnowledgeInputDashboard() {
             content: trimmed,
             language,
           }),
+          signal: controller.signal,
         });
       } catch (fetchErr) {
+        window.clearTimeout(timeoutId);
         console.error("Network/Fetch error:", fetchErr);
+        const errorMsg = fetchErr instanceof Error ? fetchErr.message : 'Unknown error';
         setMessage(
           isMyanmar 
-            ? `Network Error: ဆာဗာသို့ ချိတ်ဆက်၍မရပါ။ အင်တာနက် သို့မဟုတ် API endpoint ကို စစ်ဆေးပါ။ (${fetchErr instanceof Error ? fetchErr.message : 'Unknown error'})`
-            : `Network Error: Could not connect to the server. Please check your connection or API endpoint. (${fetchErr instanceof Error ? fetchErr.message : 'Unknown error'})`
+            ? `Network Error: ဆာဗာသို့ ချိတ်ဆက်၍မရပါ။ အင်တာနက် သို့မဟုတ် API endpoint ကို စစ်ဆေးပါ။ (${errorMsg})`
+            : `Network Error: Could not connect to the server. Please check your connection or API endpoint. (${errorMsg})`
         );
         return;
       }
+
+      window.clearTimeout(timeoutId);
 
       let payload: { knowledge?: KnowledgeCard; message?: string };
       try {
@@ -298,7 +310,9 @@ export default function KnowledgeInputDashboard() {
       }
 
       if (!response.ok || !payload.knowledge) {
-        setMessage(payload.message ?? (isMyanmar ? "အမည်မသိ အမှားတစ်ခု ဖြစ်ပွားခဲ့သည်။" : "An unknown error occurred."));
+        const errorMsg = payload.message || (isMyanmar ? "အမည်မသိ အမှားတစ်ခု ဖြစ်ပွားခဲ့သည်။" : "An unknown error occurred.");
+        console.error("Save failed:", { status: response.status, payload });
+        setMessage(errorMsg);
         return;
       }
 
@@ -308,163 +322,144 @@ export default function KnowledgeInputDashboard() {
       setMessage(isMyanmar ? "Knowledge base ကို update လုပ်ပြီးပါပြီ။" : "Knowledge base updated successfully.");
     } catch (error) {
       console.error("Save error:", error);
+      setSaveLoading(false);
       setMessage(
-        error instanceof Error 
+        error instanceof Error
           ? `Error: ${error.message}`
           : isMyanmar
-            ? "Knowledge entry ကို မသိမ်းနိုင်ပါ။"
-            : "Could not save the knowledge entry."
+            ? "အမည်မသိ အမှားတစ်ခု ဖြစ်ပွားခဲ့သည်။"
+            : "An unknown error occurred."
       );
+      return;
     } finally {
       setSaveLoading(false);
     }
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <section className="section-padding">
-        <div className="container">
-          <div className="mx-auto max-w-6xl space-y-8">
-            <div className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
-              <div className="space-y-5">
-                <div className="space-y-4">
-                  <p className="text-sm font-semibold uppercase tracking-[0.24em] text-primary">{copy.eyebrow}</p>
-                  <h1 className="text-4xl md:text-5xl font-bold tracking-tight">{copy.title}</h1>
-                  <p className="max-w-3xl text-muted-foreground">{copy.description}</p>
-                </div>
+    <div className="space-y-8">
+      {/* Header */}
+      <div className="space-y-2">
+        <div className="text-sm font-medium text-primary">{copy.eyebrow}</div>
+        <h1 className="text-4xl font-bold tracking-tight">{copy.title}</h1>
+        <p className="text-lg text-muted-foreground">{copy.description}</p>
+      </div>
 
-                <div className="grid gap-4 sm:grid-cols-3">
-                  {copy.metrics.map((metric, index) => {
-                    const Icon = index === 0 ? Sparkles : index === 1 ? Database : Brain;
-                    return (
-                      <Card key={metric.label} className="border-border/70 bg-card/60">
-                        <CardContent className="flex items-center gap-3 px-5 py-5">
-                          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-primary/10 text-primary">
-                            <Icon className="h-5 w-5" />
-                          </div>
-                          <div>
-                            <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{metric.label}</p>
-                            <p className="mt-1 font-semibold text-foreground">{metric.value}</p>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    );
-                  })}
-                </div>
-              </div>
+      {/* Input Section */}
+      <Card className="border-border/70 bg-card/70 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle>{copy.textareaLabel}</CardTitle>
+          <CardDescription>{copy.helper}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <Textarea
+            ref={textareaRef}
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder={copy.textareaPlaceholder}
+            className="min-h-[200px] resize-none"
+          />
 
-              <Card className="border-primary/20 bg-card/60">
-                <CardHeader>
-                  <CardTitle className="text-2xl">{copy.previewTitle}</CardTitle>
-                  <CardDescription>{copy.previewDesc}</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  {previewLoading ? (
-                    <div className="rounded-2xl border border-border/70 bg-background/50 p-5">
-                      <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        {copy.generating}
-                      </div>
-                    </div>
-                  ) : preview ? (
-                    <div className="space-y-4">
-                      <div className="rounded-2xl border border-border/70 bg-background/60 p-4">
-                        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{copy.titleLabel}</p>
-                        <p className="mt-2 font-semibold text-foreground">{preview.title}</p>
-                      </div>
-                      <div className="rounded-2xl border border-border/70 bg-background/60 p-4">
-                        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{copy.shortDescLabel}</p>
-                        <p className="mt-2 text-sm text-foreground/90">{preview.shortDescription}</p>
-                      </div>
-                      <div className="rounded-2xl border border-border/70 bg-background/60 p-4">
-                        <p className="text-xs uppercase tracking-[0.18em] text-muted-foreground">{copy.summaryLabel}</p>
-                        <div className="mt-3 space-y-2">
-                          {preview.summaryBullets.map((bullet) => (
-                            <div key={bullet} className="flex gap-3 text-sm text-foreground/90">
-                              <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary" />
-                              <p>{bullet}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  ) : (
-                    <div className="rounded-2xl border border-dashed border-border/70 bg-background/40 p-5 text-sm text-muted-foreground">
-                      {copy.helper}
-                    </div>
-                  )}
-                </CardContent>
-              </Card>
+          <Button
+            onClick={handleSave}
+            disabled={saveLoading || previewLoading || content.trim().length < 40}
+            className="w-full"
+            size="lg"
+          >
+            {saveLoading ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                {copy.saving}
+              </>
+            ) : (
+              <>
+                <Database className="mr-2 h-4 w-4" />
+                {copy.updateButton}
+              </>
+            )}
+          </Button>
+
+          {message && (
+            <div className={cn(
+              "rounded-lg p-3 text-sm",
+              message.includes("Error") || message.includes("Failed")
+                ? "bg-destructive/10 text-destructive"
+                : "bg-green-500/10 text-green-700 dark:text-green-400"
+            )}>
+              {message}
             </div>
+          )}
+        </CardContent>
+      </Card>
 
-            <Card className="border-primary/20 bg-card/70 shadow-[0_0_0_1px_rgba(255,255,255,0.02)]">
-              <CardHeader>
-                <CardTitle className="text-2xl">{copy.textareaLabel}</CardTitle>
-                <CardDescription>{copy.helper}</CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className={cn("rounded-3xl border border-border/70 bg-background/70 p-4 transition-all", previewLoading && "border-primary/30")}>
-                  <Textarea
-                    ref={textareaRef}
-                    value={content}
-                    onChange={(event) => setContent(event.target.value)}
-                    placeholder={copy.textareaPlaceholder}
-                    className="min-h-[180px] resize-none border-0 bg-transparent px-0 py-0 text-base shadow-none focus-visible:ring-0"
-                  />
-                </div>
-
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                    <Wand2 className="h-4 w-4 text-primary" />
-                    <span>{content.trim().length} characters</span>
-                  </div>
-                  <Button type="button" size="lg" onClick={handleSave} disabled={saveLoading || content.trim().length < 40}>
-                    {saveLoading ? (
-                      <>
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                        {copy.saving}
-                      </>
-                    ) : (
-                      <>
-                        <FileText className="h-4 w-4" />
-                        {copy.updateButton}
-                      </>
-                    )}
-                  </Button>
-                </div>
-
-                {message ? <p className="text-sm text-muted-foreground">{message}</p> : null}
-              </CardContent>
-            </Card>
-
-            <div className="space-y-5">
-              <div className="space-y-2">
-                <h2 className="text-3xl font-bold">{copy.cardsTitle}</h2>
-                <p className="text-muted-foreground">{copy.cardsDesc}</p>
+      {/* Preview Section */}
+      {preview && (
+        <Card className="border-border/70 bg-card/70 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Sparkles className="h-5 w-5" />
+              {copy.previewTitle}
+            </CardTitle>
+            <CardDescription>{copy.previewDesc}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div>
+                <h3 className="font-semibold">{copy.titleLabel}</h3>
+                <p className="text-sm text-muted-foreground mt-1">{preview.title}</p>
               </div>
 
-              {loadingList ? (
-                <Card className="border-border/70 bg-card/60">
-                  <CardContent className="flex items-center gap-3 px-6 py-6 text-muted-foreground">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    {isMyanmar ? "Knowledge cards များ ရယူနေသည်..." : "Loading knowledge cards..."}
-                  </CardContent>
-                </Card>
-              ) : knowledgeItems.length > 0 ? (
-                <div className="grid gap-6 lg:grid-cols-2">
-                  {knowledgeItems.map((item) => (
-                    <KnowledgeCardItem key={item.id} item={item} isMyanmar={isMyanmar} />
+              <div>
+                <h3 className="font-semibold">{copy.shortDescLabel}</h3>
+                <p className="text-sm text-muted-foreground mt-1">{preview.shortDescription}</p>
+              </div>
+
+              <div>
+                <h3 className="font-semibold mb-2">{copy.summaryLabel}</h3>
+                <div className="space-y-2">
+                  {preview.summaryBullets.map((bullet) => (
+                    <div key={bullet} className="flex gap-3 text-sm">
+                      <span className="mt-1 h-1.5 w-1.5 rounded-full bg-primary flex-shrink-0" />
+                      <p className="text-muted-foreground">{bullet}</p>
+                    </div>
                   ))}
                 </div>
-              ) : (
-                <Card className="border-dashed border-border/70 bg-card/50">
-                  <CardContent className="px-6 py-8 text-muted-foreground">{copy.emptyState}</CardContent>
-                </Card>
-              )}
+              </div>
             </div>
-          </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Knowledge Cards Section */}
+      <div className="space-y-4">
+        <div>
+          <h2 className="text-2xl font-bold">{copy.cardsTitle}</h2>
+          <p className="text-muted-foreground">{copy.cardsDesc}</p>
         </div>
-      </section>
+
+        {loadingList ? (
+          <div className="flex items-center justify-center py-12">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : knowledgeItems.length === 0 ? (
+          <Card className="border-border/70 bg-card/70 backdrop-blur-sm">
+            <CardContent className="flex flex-col items-center justify-center py-12">
+              <Brain className="h-12 w-12 text-muted-foreground mb-4" />
+              <p className="text-center text-muted-foreground">{copy.emptyState}</p>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4">
+            {knowledgeItems.map((item) => (
+              <KnowledgeCardItem
+                key={item.id}
+                item={item}
+                isMyanmar={isMyanmar}
+              />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
