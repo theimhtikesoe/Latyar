@@ -153,17 +153,21 @@ export default function KnowledgeInputDashboard() {
     async function loadKnowledge() {
       try {
         const response = await fetch("/api/knowledge");
-        const payload = (await response.json()) as { knowledge?: KnowledgeCard[]; message?: string };
         if (!response.ok) {
-          setMessage(payload.message ?? null);
+          const payload = (await response.json()) as { message?: string };
+          setMessage(payload.message ?? `Error ${response.status}: ${response.statusText}`);
           return;
         }
+        const payload = (await response.json()) as { knowledge?: KnowledgeCard[] };
         setKnowledgeItems(payload.knowledge ?? []);
-      } catch {
+      } catch (error) {
+        console.error("Load knowledge error:", error);
         setMessage(
-          isMyanmar
-            ? "Knowledge entries ကို မရယူနိုင်ပါ။ API configuration ကို စစ်ဆေးပါ။"
-            : "Could not load knowledge entries. Please check the API configuration."
+          error instanceof Error 
+            ? `Load Error: ${error.message}`
+            : isMyanmar
+              ? "Knowledge entries ကို မရယူနိုင်ပါ။ API configuration ကို စစ်ဆေးပါ။"
+              : "Could not load knowledge entries. Please check the API configuration."
         );
       } finally {
         setLoadingList(false);
@@ -206,21 +210,23 @@ export default function KnowledgeInputDashboard() {
           signal: controller.signal,
         });
 
-        const payload = (await response.json()) as { preview?: KnowledgePreview; message?: string };
         if (!response.ok) {
-          setMessage(payload.message ?? null);
+          const payload = (await response.json()) as { message?: string };
+          setMessage(payload.message ?? `Preview Error ${response.status}`);
           setPreview(null);
           return;
         }
 
+        const payload = (await response.json()) as { preview?: KnowledgePreview };
         setPreview(payload.preview ?? null);
         setMessage(null);
       } catch (error) {
         if (controller.signal.aborted) return;
+        console.error("Preview error:", error);
         setPreview(null);
         setMessage(
-          error instanceof Error && error.message
-            ? error.message
+          error instanceof Error
+            ? `Preview Error: ${error.message}`
             : isMyanmar
               ? "AI preview မထုတ်နိုင်ပါ။"
               : "Could not generate AI preview."

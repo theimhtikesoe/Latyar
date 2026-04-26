@@ -60,6 +60,9 @@ function getSupabaseClient() {
 
   return createClient(supabaseUrl, supabaseKey, {
     auth: { persistSession: false },
+    global: {
+      fetch: (...args) => fetch(...args),
+    },
   });
 }
 
